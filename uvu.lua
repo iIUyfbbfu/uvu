@@ -313,7 +313,7 @@ Units_Channel:Button("Unequip All Units", function()
 
     loadUnit()
     Endpoints.unequip_all:InvokeServer()
-    for _, v in next, Units do
+    for _, v in ipairs(Units) do
         drop:Add(v)
         drop2:Add(v)
         drop3:Add(v)
