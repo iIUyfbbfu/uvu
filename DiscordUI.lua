@@ -49,21 +49,16 @@ local function MakeDraggable(topbarobject, object)
 			DragStart = input.Position
 			StartPosition = object.Position
 
-			input.Changed:Connect(
-				function()
-					if input.UserInputState == Enum.UserInputState.End then
-						Dragging = false
-					end
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					Dragging = false
 				end
-			)
+			end)
 		end
 	end)
 
 	topbarobject.InputChanged:Connect(function(input)
-		if
-			input.UserInputType == Enum.UserInputType.MouseMovement or
-			input.UserInputType == Enum.UserInputType.Touch
-		then
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
 			DragInput = input
 		end
 	end)
@@ -279,58 +274,46 @@ function DiscordLib:Window(text)
 	ServersHoldPadding.Name = "ServersHoldPadding"
 	ServersHoldPadding.Parent = ServersHold
 
-	CloseBtn.MouseButton1Click:Connect(
-		function()
-			MainFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .3, true)
-		end
-	)
+	CloseBtn.MouseButton1Click:Connect(function()
+		MainFrame:TweenSize(UDim2.new(0, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, .3, true)
+	end)
 
-	CloseBtn.MouseEnter:Connect(
-		function()
-			CloseBtn.BackgroundColor3 = Color3.fromRGB(240, 71, 71)
-		end
-	)
+	CloseBtn.MouseEnter:Connect(function()
+		CloseBtn.BackgroundColor3 = Color3.fromRGB(240, 71, 71)
+	end)
 
-	CloseBtn.MouseLeave:Connect(
-		function()
-			CloseBtn.BackgroundColor3 = Color3.fromRGB(32, 34, 37)
-		end
-	)
+	CloseBtn.MouseLeave:Connect(function()
+		CloseBtn.BackgroundColor3 = Color3.fromRGB(32, 34, 37)
+	end)
 
-	MinimizeBtn.MouseEnter:Connect(
-		function()
-			MinimizeBtn.BackgroundColor3 = Color3.fromRGB(40, 43, 46)
-		end
-	)
+	MinimizeBtn.MouseEnter:Connect(function()
+		MinimizeBtn.BackgroundColor3 = Color3.fromRGB(40, 43, 46)
+	end)
 
-	MinimizeBtn.MouseLeave:Connect(
-		function()
-			MinimizeBtn.BackgroundColor3 = Color3.fromRGB(32, 34, 37)
-		end
-	)
+	MinimizeBtn.MouseLeave:Connect(function()
+		MinimizeBtn.BackgroundColor3 = Color3.fromRGB(32, 34, 37)
+	end)
 
-	MinimizeBtn.MouseButton1Click:Connect(
-		function()
-			if minimized == false then
-				MainFrame:TweenSize(
-					UDim2.new(0, 681, 0, 22),
-					Enum.EasingDirection.Out,
-					Enum.EasingStyle.Quart,
-					.3,
-					true
-				)
-			else
-				MainFrame:TweenSize(
-					UDim2.new(0, 681, 0, 396),
-					Enum.EasingDirection.Out,
-					Enum.EasingStyle.Quart,
-					.3,
-					true
-				)
-			end
-			minimized = not minimized
+	MinimizeBtn.MouseButton1Click:Connect(function()
+		if minimized == false then
+			MainFrame:TweenSize(
+				UDim2.new(0, 681, 0, 22),
+				Enum.EasingDirection.Out,
+				Enum.EasingStyle.Quart,
+				.3,
+				true
+			)
+		else
+			MainFrame:TweenSize(
+				UDim2.new(0, 681, 0, 396),
+				Enum.EasingDirection.Out,
+				Enum.EasingStyle.Quart,
+				.3,
+				true
+			)
 		end
-	)
+		minimized = not minimized
+	end)
 
 	local SettingsOpenBtn = Instance.new("TextButton")
 	local SettingsOpenBtnIco = Instance.new("ImageLabel")
