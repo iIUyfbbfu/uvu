@@ -7,6 +7,7 @@ Client.Mouse = Client.LocalPlayer:GetMouse()
 getgenv().saveFileName = 'Anime-Adventures_' .. Client.LocalPlayer.Name .. '.json'
 
 --// VARIABLES
+local unitConversion = Client.HttpService:JSONDecode(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/unitConversion.json')
 local GenvVariables = {
     -- MISC
     hideName = false,
@@ -24,6 +25,26 @@ local GenvVariables = {
     world = false,
     difficulty = 'Normal',
     sellAtWave = 0,
+
+    -- PRIORITY
+    placePriorityEnabled = false,
+    upgradePriorityEnabled = false,
+    placePriority = {
+        U1 = '0',
+        U2 = '0',
+        U3 = '0',
+        U4 = '0',
+        U5 = '0',
+        U6 = '0'
+    },
+    upgradePriority = {
+        U1 = '0',
+        U2 = '0',
+        U3 = '0',
+        U4 = '0',
+        U5 = '0',
+        U6 = '0'
+    },
 
     webhook = false,
     webhookUrl = false,
@@ -116,6 +137,21 @@ local codes = {
     'Cxrsed'
 }
 
+do
+    local new = {}
+    local new2 = {}
+
+    for i, v in next, unitConversion do
+        table.insert(new, i)
+        table.insert(new2, v)
+    end
+
+    unitConversion = {
+        CollectableName = new,
+        InGameUnitName = new2
+    }
+end
+
 --// JSON Settings Save File
 local loadSaveFile = function()
     local jsonData do
@@ -126,8 +162,12 @@ local loadSaveFile = function()
     end
     local data = Client.HttpService:JSONDecode(jsonData)
 
-    table.foreach(GenvVariables, function(i,_)
-        getgenv()[i] = data[i]
+    table.foreach(GenvVariables, function(i,v)
+        if data[i] then
+            getgenv()[i] = data[i]
+        else
+            getgenv()[i] = v
+        end
     end)
 end
 
@@ -211,7 +251,7 @@ local Post = function()
 end
 
 --// Making UI
-local DiscordLib = loadstring(game:HttpGet 'https://raw.githubusercontent.com/Forever4D/Lib/main/DiscordLib2.lua')()
+local DiscordLib = loadstring(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/DiscordUI.lua')()
 local win = DiscordLib:Window('Exploit v0.0.1' .. ' - ' .. tostring(identifyexecutor()))
 local Server = win:Server('Anime Adventures', 'http://www.roblox.com/asset/?id=6031075938')
 
@@ -238,13 +278,22 @@ local Units = {}
 
 local loadUnit = function()
     local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
+    repeat task.wait() until
+        PlayerGui:FindFirstChild('collection')
+        and PlayerGui.collection:FindFirstChild('grid')
+        and PlayerGui.collection.grid:FindFirstChild('List')
+        and PlayerGui.collection.grid.List:FindFirstChild('Outer')
+        and PlayerGui.collection.grid.List.Outer:FindFirstChild('UnitFrames')
+
     task.wait(2)
     table.clear(Units)
-    for _, v in next, PlayerGui:WaitForChild('collection'):WaitForChild('grid'):WaitForChild('List'):WaitForChild('Outer'):WaitForChild('UnitFrames'):GetChildren() do
-        if (v.Name == "CollectionUnitFrame") and v['name'] and v:FindFirstChild('_uuid') then
-            table.insert(Units, v.name.Text .. " #" .. v._uuid.Value)
+    pcall(function()
+        for _, v in next, PlayerGui:WaitForChild('collection'):WaitForChild('grid'):WaitForChild('List'):WaitForChild('Outer'):WaitForChild('UnitFrames'):GetChildren() do
+            if (v.Name == "CollectionUnitFrame") and v['name'] and v:FindFirstChild('_uuid') then
+                table.insert(Units, v.name.Text .. " #" .. v._uuid.Value)
+            end
         end
-    end
+    end)
 end
 loadUnit()
 
@@ -402,6 +451,154 @@ getgenv().leveldrop = Farming_Channel:Dropdown("Select Level", getgenv().levels,
 end)
 getgenv().diff = Farming_Channel:Dropdown("Select Difficulty", {"Normal", "Hard"}, getgenv().difficulty, function(diff)
     getgenv().difficulty = diff
+    saveSaveFile()
+end)
+
+--// Tabs [[Priority]]
+local Priority_Channel = Server:Channel('Priority')
+Priority_Channel:Label('Manage the order in the next tab!')
+Priority_Channel:Seperator()
+Priority_Channel:Toggle('Placing', getgenv().placePriorityEnabled, function(bool)
+    getgenv().placePriorityEnabled = bool
+    saveSaveFile()
+end)
+Priority_Channel:Toggle('Upgrading', getgenv().upgradePriorityEnabled, function(bool)
+    getgenv().upgradePriorityEnabled = bool
+    saveSaveFile()
+end)
+
+local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=10033395442')
+local ErrorNotif = function(need)
+    DiscordLib:Notification(
+        'Warning',
+        'Please input a ' .. need .. '!',
+        'Okay'
+    )
+end
+
+local Placing_Channel = PriorityServer:Channel('Placing')
+Placing_Channel:Label('Largest Integer has Highest Priority')
+Placing_Channel:Textbox('Set: Unit 1', getgenv().placePriority['U1'], false, function(num)
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().placePriority['U1'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
+end)
+Placing_Channel:Textbox('Set: Unit 2', getgenv().placePriority['U2'], false, function(num)
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().placePriority['U2'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
+end)
+Placing_Channel:Textbox('Set: Unit 3', getgenv().placePriority['U3'], false, function(num)
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().placePriority['U3'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
+end)
+Placing_Channel:Textbox('Set: Unit 4', getgenv().placePriority['U4'], false, function(num)
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().placePriority['U4'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
+end)
+
+if tonumber(axx[2]) >= 20 then
+    Placing_Channel:Textbox('Set: Unit 5', getgenv().placePriority['U5'], false, function(num)
+        if select(1, num:gsub('%D+', '')) == tostring(num) then
+            getgenv().placePriority['U5'] = num
+            saveSaveFile()
+        else
+            ErrorNotif('Integer')
+        end
+    end)
+end
+
+if tonumber(axx[2]) >= 50 then
+    Placing_Channel:Textbox('Set: Unit 6', getgenv().placePriority['U6'], false, function(num)
+        if select(1, num:gsub('%D+', '')) == tostring(num) then
+            getgenv().placePriority['U6'] = num
+            saveSaveFile()
+        else
+            ErrorNotif('Integer')
+        end
+    end)
+end
+Placing_Channel:Button('Reset Priority', function()
+    for t = 1,6 do
+        getgenv().placePriority['U'..t] = '0'
+    end
+    saveSaveFile()
+end)
+
+local Upgrading_Channel = PriorityServer:Channel('Upgrading')
+Upgrading_Channel:Label('Largest Integer Highest Priority')
+Upgrading_Channel:Textbox('Set: Unit 1', getgenv().upgradePriority['U1'], false, function(num)
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().upgradePriority['U1'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
+end)
+Upgrading_Channel:Textbox('Set: Unit 2', getgenv().upgradePriority['U2'], false, function(num)
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().upgradePriority['U2'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
+end)
+Upgrading_Channel:Textbox('Set: Unit 3', getgenv().upgradePriority['U3'], false, function(num)
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().upgradePriority['U3'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
+end)
+Upgrading_Channel:Textbox('Set: Unit 4', getgenv().upgradePriority['U4'], false, function(num)
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().upgradePriority['U4'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
+end)
+
+if tonumber(axx[2]) >= 20 then
+    Upgrading_Channel:Textbox('Set: Unit 5', getgenv().upgradePriority['U5'], false, function(num)
+        if select(1, num:gsub('%D+', '')) == tostring(num) then
+            getgenv().upgradePriority['U5'] = num
+            saveSaveFile()
+        else
+            ErrorNotif('Integer')
+        end
+    end)
+end
+
+if tonumber(axx[2]) >= 50 then
+    Upgrading_Channel:Textbox('Set: Unit 6', getgenv().upgradePriority['U6'], false, function(num)
+        if select(1, num:gsub('%D+', '')) == tostring(num) then
+            getgenv().upgradePriority['U6'] = num
+            saveSaveFile()
+        else
+            ErrorNotif('Integer')
+        end
+    end)
+end
+Upgrading_Channel:Button('Reset Priority', function()
+    for t = 1,6 do
+        getgenv().upgradePriority['U'..t] = '0'
+    end
     saveSaveFile()
 end)
 
@@ -601,82 +798,141 @@ task.spawn(function()
         local _wave = workspace:WaitForChild("_wave_num")
         local expired = false
 
-        if getgenv().autoFarm then
+        local getCurrentUnits = function()
+            local curr = {}
             for _, v in next, workspace:WaitForChild('_UNITS'):GetChildren() do
-                if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) then
-                    if getgenv().autoSell and tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value) then --// Auto Sell
-                        Endpoints.sell_unit_ingame:InvokeServer(v)
-                        expired = true
-                    end
+                if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and v.Name ~= 'aot_generic' then
+                    table.insert(curr, v)
+                end
+            end
+            return curr
+        end
 
-                    if getgenv().autoAbility then --// Auto Ability
-                        pcall(function()
-                            Endpoints.use_active_attack:InvokeServer(v)
-                        end)
-                    end
+        local currentUnits, toUpgrade, toPlace do
+            currentUnits, toUpgrade, toPlace = {}, {}, {}
 
-                    if getgenv().autoUpgrade then --// Auto Upgrade
-                        local maxUnits = 10
-                        pcall(function()
-                            if v['_stats'] and v['_stats'].upgrade and (v['_stats'].upgrade.Value == 0) or (v['_stats'].upgrade.Value <= maxUnits) then
-                                Endpoints.upgrade_unit_ingame:InvokeServer(v)
+            for _, v in next, workspace:WaitForChild('_UNITS'):GetChildren() do
+                if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and v.Name ~= 'aot_generic' then
+                    table.insert(currentUnits, v)
+                    for t,v2 in next, getgenv().SelectedUnits do
+                        if string.find(v2:lower(), unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v.Name)]) then
+                            table.insert(toUpgrade, {
+                                Priority = tonumber(getgenv().upgradePriority[t]),
+                                Object = v
+                            })
+                        end
+                        break
+                    end
+                end
+            end
+
+            for i, v in next, getgenv().placePriority do
+                table.insert(toPlace, {
+                    Unit = i,
+                    Priority = tonumber((getgenv().placePriorityEnabled and v) or '0')
+                })
+            end
+            if not getgenv().upgradePriorityEnabled then
+                toUpgrade = currentUnits
+            end
+
+            table.sort(toUpgrade, function(a, b)
+                return tonumber(a.Priority) > tonumber(b.Priority)
+            end)
+            table.sort(toPlace, function(a,b)
+                return tonumber(a.Priority) > tonumber(b.Priority)
+            end)
+        end
+
+        if getgenv().autoFarm then
+            if getgenv().autoSell and tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value) then --// Auto Sell
+                expired = true
+                for _, v in next, currentUnits do
+                    Endpoints.sell_unit_ingame:InvokeServer(v)
+                end
+            end
+
+            if not expired and getgenv().autoAbility then
+                for _, v in next, currentUnits do
+                    pcall(function()
+                        Endpoints.use_active_attack:InvokeServer(v)
+                    end)
+                end
+            end
+
+            if not expired and getgenv().autoUpgrade then
+                local maxUnits = 10
+                pcall(function()
+                    for _, v in next, toUpgrade do
+                        if v.Object['_stats'] and v.Object['_stats'].upgrade and (v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits) then
+                            Endpoints.upgrade_unit_ingame:InvokeServer(v.Object)
+                        end
+                    end
+                end)
+            end
+
+            if not expired then
+                local x = 4
+                local y = 3
+                local z = 4
+
+                for _, v in next, toPlace do
+                    local unitinfo = getgenv().SelectedUnits[v.Unit]
+                    if unitinfo ~= nil then
+                        local unitinfo_ = unitinfo:split(" #")
+                        local pos = getgenv().SpawnUnitPos["UP" .. v.Unit:sub(-1)]
+                        local checkCount = function(num)
+                            local count = 0
+                            for _, v2 in next, getCurrentUnits() do
+                                if unitinfo_[2]:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
+                                    count = count + 1
+                                end
                             end
-                        end)
+                            return count >= num
+                        end
+
+                        repeat
+                        -- place units 0
+                            Endpoints.spawn_unit:InvokeServer(
+                                unitinfo_[2],
+                                CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                            )
+
+                            -- place units 1
+                            Endpoints.spawn_unit:InvokeServer(
+                                unitinfo_[2],
+                                CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                            )
+
+                            -- place units 2 
+                            Endpoints.spawn_unit:InvokeServer(
+                                unitinfo_[2],
+                                CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                            )
+
+                            -- place units 3 
+                            Endpoints.spawn_unit:InvokeServer(
+                                unitinfo_[2],
+                                CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                            )
+
+                            -- place units 4
+                            Endpoints.spawn_unit:InvokeServer(
+                                unitinfo_[2],
+                                CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                            )
+
+                            -- place units 5
+                            Endpoints.spawn_unit:InvokeServer(
+                                unitinfo_[2],
+                                CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                            )
+                            task.wait()
+                        until checkCount((v.Priority > 0) and 2 or 1)
                     end
                 end
             end
         end
-
-        if not expired and getgenv().autoFarm then
-            local x = 4
-            local y = 3
-            local z = 4
-
-            for i = 1, 6 do
-                local unitinfo = getgenv().SelectedUnits["U" .. i]
-                if unitinfo ~= nil then
-                    local unitinfo_ = unitinfo:split(" #")
-                    local pos = getgenv().SpawnUnitPos["UP" .. i]
-
-                    -- place units 0
-                    Endpoints.spawn_unit:InvokeServer(
-                        unitinfo_[2],
-                        CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                    )
-
-                    -- place units 1
-                    Endpoints.spawn_unit:InvokeServer(
-                        unitinfo_[2],
-                        CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                    )
-
-                    -- place units 2 
-                    Endpoints.spawn_unit:InvokeServer(
-                        unitinfo_[2],
-                        CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                    )
-
-                    -- place units 3 
-                    Endpoints.spawn_unit:InvokeServer(
-                        unitinfo_[2],
-                        CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                    )
-
-                    -- place units 4
-                    Endpoints.spawn_unit:InvokeServer(
-                        unitinfo_[2],
-                        CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                    )
-
-                    -- place units 5
-                    Endpoints.spawn_unit:InvokeServer(
-                        unitinfo_[2],
-                        CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                    )
-                end
-            end
-        end
-
     end
 end)
 
