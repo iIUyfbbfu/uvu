@@ -928,7 +928,7 @@ task.spawn(function()
                                 CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
                             )
                             task.wait()
-                        until checkCount((v.Priority > 0) and 2 or 1)
+                        until checkCount(1)
                     end
                 end
             end
