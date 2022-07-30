@@ -241,7 +241,7 @@ local loadUnit = function()
     task.wait(2)
     table.clear(Units)
     for _, v in next, PlayerGui:WaitForChild('collection'):WaitForChild('grid'):WaitForChild('List'):WaitForChild('Outer'):WaitForChild('UnitFrames'):GetChildren() do
-        if (v.Name == "CollectionUnitFrame") and v['name'] and v:FindFirstChild('._uuid') then
+        if (v.Name == "CollectionUnitFrame") and v['name'] and v:FindFirstChild('_uuid') then
             table.insert(Units, v.name.Text .. " #" .. v._uuid.Value)
         end
     end
