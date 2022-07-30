@@ -39,7 +39,6 @@ local function MakeDraggable(topbarobject, object)
 			StartPosition.Y.Scale,
 			StartPosition.Y.Offset + Delta.Y
 		)
-		print(pos)
 		object.Position = pos
 	end
 
