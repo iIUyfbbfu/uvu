@@ -1,15 +1,15 @@
 {
   "Collectable Name" : "In-Game Unit Name",
   
-  'brulo' : 'broly',
-  'legendary brulo' : 'broly',
+  "brulo' : "broly",
+  "legendary brulo" : "broly",
   
-  'onwin' : 'erwin',
+  "onwin' : "erwin",
   
-  'blackhair' : 'blackbeard',
+  "blackhair' : "blackbeard",
   
-  'levy' : 'levi',
-  'levy ackman' : 'levi',
+  "levy" : 'levi",
+  "levy ackman" : "levi",
   
-  'bulmy' : 'bulma',
+  "bulmy" : "bulma",
 }
