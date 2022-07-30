@@ -43,7 +43,7 @@ local function MakeDraggable(topbarobject, object)
 		object.Position = pos
 	end
 
-	topbarobject.InputBegan:Connect(function()
+	topbarobject.InputBegan:Connect(function(input)
 		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
 			Dragging = true
 			DragStart = input.Position
