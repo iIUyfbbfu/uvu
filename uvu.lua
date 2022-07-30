@@ -467,7 +467,7 @@ Priority_Channel:Toggle('Upgrading', getgenv().upgradePriorityEnabled, function(
     saveSaveFile()
 end)
 
-local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=10033395442')
+local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=7810528321')
 local ErrorNotif = function(need)
     DiscordLib:Notification(
         'Warning',
