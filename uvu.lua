@@ -684,27 +684,39 @@ end)
 task.spawn(function()
     while task.wait() and (game.PlaceId == 8304191830) do
         if getgenv().autoStart and getgenv().autoFarm then
+            local referencePoint = workspace:WaitForChild('_codes'):WaitForChild('area')
+            local avaliableDoors = {}
+
             for _, v in next, workspace:WaitForChild('_LOBBIES').Story:GetDescendants() do
                 if v.Name == "Owner" and v.Value == nil then
-                    getgenv().door = v.Parent.Name
-                    break
+                    table.insert(avaliableDoors, {
+                        distance = (v.Parent:GetPrimaryPartCFrame().Position - referencePoint.Position).Magnitude,
+                        name = v.Parent.Name
+                    })
                 end
             end
-    
-            task.wait(0.1)
-            Endpoints.request_join_lobby:InvokeServer(getgenv().door)
-            task.wait(0.1)
-    
-            Endpoints.request_lock_level:InvokeServer(
-                getgenv().door,
-                getgenv().level,
-                true,
-                getgenv().difficulty
-            )
-    
-            task.wait(3)
-    
-            Endpoints.request_start_game:InvokeServer(getgenv().door)
+
+            table.sort(avaliableDoors, function(a,b)
+                return a.distance > b.distance
+            end)
+            getgenv().door = avaliableDoors[1]
+
+            if getgenv().door then
+                task.wait(0.1)
+                Endpoints.request_join_lobby:InvokeServer(getgenv().door)
+                task.wait(0.1)
+        
+                Endpoints.request_lock_level:InvokeServer(
+                    getgenv().door,
+                    getgenv().level,
+                    true,
+                    getgenv().difficulty
+                )
+        
+                task.wait(3)
+        
+                Endpoints.request_start_game:InvokeServer(getgenv().door)
+            end
             task.wait(5)
         end
     end
