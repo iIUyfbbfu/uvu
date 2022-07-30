@@ -699,7 +699,7 @@ task.spawn(function()
             table.sort(avaliableDoors, function(a,b)
                 return a.distance > b.distance
             end)
-            getgenv().door = avaliableDoors[1]
+            getgenv().door = avaliableDoors[1].name
 
             if getgenv().door then
                 task.wait(0.1)
