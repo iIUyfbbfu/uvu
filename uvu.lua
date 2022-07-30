@@ -467,7 +467,7 @@ Priority_Channel:Toggle('Upgrading', getgenv().upgradePriorityEnabled, function(
     saveSaveFile()
 end)
 
-local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=7810528321')
+local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=10033395415')
 local ErrorNotif = function(need)
     DiscordLib:Notification(
         'Warning',
@@ -888,8 +888,7 @@ task.spawn(function()
                                     count = count + 1
                                 end
                             end
-			    print(count >= num)
-                            return (count >= num) or true
+                            return count >= num
                         end
 
                         repeat
