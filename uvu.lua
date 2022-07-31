@@ -186,6 +186,13 @@ loadSaveFile()
 --// Discord
 local Post = function()
     if not getgenv().webhookUrl or getgenv().webhookUrl == '' then return end
+	local passOrFail do
+        if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value) then
+            passOrFail = 'PASS'
+        else
+            passOrFail = 'FAIL'
+        end
+    end
 
     local Stats = Client.LocalPlayer:WaitForChild('_stats')
     local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
@@ -216,11 +223,11 @@ local Post = function()
         embeds = {
             {
                 author = {
-                    name = 'Anime Adventures | PASS',
+                    name = 'Anime Adventures | ' .. passOrFail,
                     icon_url = 'https://cdn.discordapp.com/emojis/997123585476927558.webp?size=96&quality=lossless'
                 },
                 description = Client.LocalPlayer.Name,
-                color = 110335,
+                color = ((passOrFail == 'PASS') and 110335) or 16711680,
                 thumbnail = {
                     url = 'https://www.roblox.com/headshot-thumbnail/image?userId=' .. Client.LocalPlayer.UserId .. '&width=420&height=420&format=png'
                 },
