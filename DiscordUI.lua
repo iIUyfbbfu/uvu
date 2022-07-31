@@ -60,7 +60,7 @@ local function MakeDraggable(topbarobject, object)
 		end
 	end)
 
-	UserInputService.InputChanged:Connect(function(input)
+	Client.UserInputService.InputChanged:Connect(function(input)
 		if input == DragInput and Dragging then
 			Update(input)
 		end
