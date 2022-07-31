@@ -884,14 +884,14 @@ task.spawn(function()
                         local checkCount = function(num)
                             local count = 0
                             for _, v2 in next, getCurrentUnits() do
-                                if unitinfo_[2]:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
+                                if unitinfo:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
                                     count = count + 1
                                 end
                             end
                             return count >= num
                         end
 
-                        --repeat
+                        repeat
                         -- place units 0
                             Endpoints.spawn_unit:InvokeServer(
                                 unitinfo_[2],
@@ -928,7 +928,7 @@ task.spawn(function()
                                 CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
                             )
                             task.wait()
-                        --until checkCount(1)
+                        until checkCount(1)
                     end
                 end
             end
