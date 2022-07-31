@@ -186,7 +186,6 @@ loadSaveFile()
 --// Discord
 local Post = function()
     if not getgenv().webhookUrl or getgenv().webhookUrl == '' then return end
-    local color = ((passOrFail == 'PASS') and 110335) or 16711680
     local passOrFail do
         if getgenv().autoSell then
             if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= workspace:FindFirstChild('_wave_num').Value) then
@@ -198,6 +197,7 @@ local Post = function()
             passOrFail = 'PASS'
         end
     end
+	local color = ((passOrFail == 'PASS') and 110335) or 16711680
 
     local Stats = Client.LocalPlayer:WaitForChild('_stats')
     local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
