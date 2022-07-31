@@ -640,7 +640,7 @@ do
     end)
 end
 Webhook_Channel:Label("Webhook sends notification in discord everytime\nGame is Finished!")
-Webhook_Channel:Label(' ')
+Webhook_Channel:Seperator()
 Webhook_Channel:Toggle('Mention', getgenv().webhookMention, function(bool)
     getgenv().webhookMention = bool
     saveSaveFile()
