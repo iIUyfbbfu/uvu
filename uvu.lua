@@ -187,10 +187,14 @@ loadSaveFile()
 local Post = function()
     if not getgenv().webhookUrl or getgenv().webhookUrl == '' then return end
 	local passOrFail do
-        if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value) then
-            passOrFail = 'PASS'
+        if getgenv().autoSell then
+            if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value) then
+                passOrFail = 'PASS'
+            else
+                passOrFail = 'FAIL'
+            end
         else
-            passOrFail = 'FAIL'
+            passOrFail = 'PASS'
         end
     end
 
