@@ -186,7 +186,7 @@ loadSaveFile()
 --// Discord
 local Post = function()
     if not getgenv().webhookUrl or getgenv().webhookUrl == '' then return end
-	local passOrFail do
+    local passOrFail do
         if getgenv().autoSell then
             if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value) then
                 passOrFail = 'PASS'
@@ -283,7 +283,7 @@ Misc_Channel:Toggle('Anti Afk', getgenv().antiAfk, function(bool)
     getgenv().antiAfk = bool
     saveSaveFile()
 end)
-Misc_Channel:Label(' ')
+Misc_Channel:Seperator()
 Misc_Channel:Button('Redeem Codes', function()
     for _, v in next, codes do
         Endpoints.redeem_code:InvokeServer(v)
@@ -292,6 +292,8 @@ end)
 
 --// Tabs [[UNITS]]
 local Units_Channel = Server:Channel('Units')
+Units_Channel:Label('Equip units to allow Farming to Work!')
+Units_Channel:Seperator()
 local Units = {}
 
 local loadUnit = function()
@@ -408,6 +410,7 @@ Farming_Channel:Toggle('Auto Start', getgenv().autoStart, function(bool)
     getgenv().autoStart = bool
     saveSaveFile()
 end)
+Farming_Channel:Seperator()
 Farming_Channel:Toggle('Auto Farm', getgenv().autoFarm, function(bool)
     getgenv().autoFarm = bool
     saveSaveFile()
@@ -420,6 +423,7 @@ Farming_Channel:Toggle("Auto Ability", getgenv().autoAbility, function(bool)
     getgenv().autoAbility = bool
     saveSaveFile()
 end)
+Farming_Channel:Seperator()
 Farming_Channel:Toggle("Auto Sell at Spectic Wave", getgenv().autoSell, function(bool)
     getgenv().autoSell = bool
     saveSaveFile()
@@ -493,6 +497,7 @@ local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=1
 
 local Placing_Channel = PriorityServer:Channel('Placing')
 Placing_Channel:Label('Largest Integer has Highest Priority')
+Placing_Channel:Seperator()
 Placing_Channel:Textbox('Set: Unit 1', getgenv().placePriority['U1'], false, function(num)
     if select(1, num:gsub('%D+', '')) == tostring(num) then
         getgenv().placePriority['U1'] = num
@@ -547,6 +552,7 @@ if tonumber(axx[2]) >= 50 then
         end
     end)
 end
+Placing_Channel:Seperator()
 Placing_Channel:Button('Reset Priority', function()
     for t = 1,6 do
         getgenv().placePriority['U'..t] = '0'
@@ -556,6 +562,7 @@ end)
 
 local Upgrading_Channel = PriorityServer:Channel('Upgrading')
 Upgrading_Channel:Label('Largest Integer Highest Priority')
+Upgrading_Channel:Seperator()
 Upgrading_Channel:Textbox('Set: Unit 1', getgenv().upgradePriority['U1'], false, function(num)
     if select(1, num:gsub('%D+', '')) == tostring(num) then
         getgenv().upgradePriority['U1'] = num
@@ -610,6 +617,7 @@ if tonumber(axx[2]) >= 50 then
         end
     end)
 end
+Upgrading_Channel:Seperator()
 Upgrading_Channel:Button('Reset Priority', function()
     for t = 1,6 do
         getgenv().upgradePriority['U'..t] = '0'
@@ -643,6 +651,7 @@ do
         saveSaveFile()
     end)
 end
+Webhook_Channel:Seperator()
 Webhook_Channel:Button('Test Webhook', function()
     local success, err = pcall(function()
         Post()
@@ -661,7 +670,7 @@ if game.PlaceId == 8304191830 then
             local gems10 = math.floor(GemNumber.Value/500)
             local gems = GemNumber.Value - (gems10*500)
 
-            if (gems10 > 0) or (gems > 0) then
+            if (gems10 > 0) or (gems >= 50) then
                 Endpoints.buy_random_fighter:InvokeServer(
                     'dbz_fighter',
                     (gems10>0 and 'gems10') or 'gems'
@@ -689,6 +698,7 @@ if game.PlaceId == 8304191830 then
             end
         end
     end
+    Misc_Channel:Seperator()
     Misc_Channel:Toggle('Auto Summon (Gems)', getgenv().autoSummonGEM, function(bool)
         getgenv().autoSummonGEM = bool
         saveSaveFile()
@@ -736,6 +746,7 @@ else
         end)
     end
 
+    Farming_Channel:Seperator()
     Farming_Channel:Button("Set Unit 1 Postion", function()
         DiscordLib:Notification(
             "Set Unit 1 Spawn Position",
