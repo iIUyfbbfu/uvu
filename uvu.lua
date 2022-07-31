@@ -284,12 +284,6 @@ Misc_Channel:Toggle('Anti Afk', getgenv().antiAfk, function(bool)
     getgenv().antiAfk = bool
     saveSaveFile()
 end)
-Misc_Channel:Seperator()
-Misc_Channel:Button('Redeem Codes', function()
-    for _, v in next, codes do
-        Endpoints.redeem_code:InvokeServer(v)
-    end
-end)
 
 --// Tabs [[UNITS]]
 local Units_Channel = Server:Channel('Units')
@@ -662,6 +656,13 @@ end)
 
 --// PLACE SPECIFIC
 if game.PlaceId == 8304191830 then
+	Misc_Channel:Seperator()
+	Misc_Channel:Button('Redeem Codes', function()
+		for _, v in next, codes do
+			Endpoints.redeem_code:InvokeServer(v)
+		end
+	end)
+	
     local summon = function()
         if not getgenv().autoSummonGEM and not getgenv().autoSummonTICKET then return end
         local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
