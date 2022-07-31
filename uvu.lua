@@ -884,11 +884,11 @@ task.spawn(function()
                         local checkCount = function(num)
                             local count = 0
                             for _, v2 in next, getCurrentUnits() do
-                                if unitinfo:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
+                                if unitinfo_[1]:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
                                     count = count + 1
                                 end
                             end
-                            return (count >= num) or true
+                            return (count >= num)
                         end
 
                         repeat
