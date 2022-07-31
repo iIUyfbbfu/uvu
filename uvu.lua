@@ -888,7 +888,7 @@ task.spawn(function()
                                     count = count + 1
                                 end
                             end
-                            return count >= num
+                            return (count >= num) or true
                         end
 
                         repeat
