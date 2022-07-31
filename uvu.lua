@@ -189,7 +189,7 @@ local Post = function()
     local color = ((passOrFail == 'PASS') and 110335) or 16711680
     local passOrFail do
         if getgenv().autoSell then
-            if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= game.Workspace._wave.Value) then
+            if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= workspace:FindFirstChild('_wave_num').Value) then
                 passOrFail = 'PASS'
             else
                 passOrFail = 'FAIL'
