@@ -265,7 +265,19 @@ end
 --// Making UI
 local DiscordLib = loadstring(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/DiscordUI.lua')()
 local win = DiscordLib:Window('Exploit v0.0.3' .. ' - ' .. tostring(identifyexecutor()))
+
 local Server = win:Server('Anime Adventures', 'http://www.roblox.com/asset/?id=6031075938')
+local Misc_Channel = Server:Channel('Misc')
+local Units_Channel = Server:Channel('Units')
+local Farming_Channel = Server:Channel('Farming')
+local Position_Channel do if game.PlaceId ~= 8304191830 then Position_Channel = Server:Channel('Position') end end
+local Priority_Channel = Server:Channel('Priority')
+local Webhook_Channel = Server:Channel('Webhook')
+
+local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=4949649813')
+local Placing_Channel = PriorityServer:Channel('Placing')
+local Upgrading_Channel = PriorityServer:Channel('Upgrading')
+
 local ErrorNotif = function(need)
     DiscordLib:Notification(
         'Warning',
@@ -275,7 +287,6 @@ local ErrorNotif = function(need)
 end
 
 --// Tabs [[MISC]]
-local Misc_Channel = Server:Channel('Misc')
 Misc_Channel:Toggle('Hide Name', getgenv().hideName, function(bool)
     getgenv().hideName = bool
     saveSaveFile()
@@ -286,7 +297,6 @@ Misc_Channel:Toggle('Anti Afk', getgenv().antiAfk, function(bool)
 end)
 
 --// Tabs [[UNITS]]
-local Units_Channel = Server:Channel('Units')
 Units_Channel:Label('Equip units to allow Farming to Work!')
 Units_Channel:Seperator()
 local Units = {}
@@ -400,7 +410,6 @@ Units_Channel:Button("Unequip All Units", function()
 end)
 
 --// Tabs [[FARMING]]
-local Farming_Channel = Server:Channel('Farming')
 Farming_Channel:Toggle('Auto Start', getgenv().autoStart, function(bool)
     getgenv().autoStart = bool
     saveSaveFile()
@@ -476,7 +485,6 @@ getgenv().diff = Farming_Channel:Dropdown("Select Difficulty", {"Normal", "Hard"
 end)
 
 --// Tabs [[Priority]]
-local Priority_Channel = Server:Channel('Priority')
 Priority_Channel:Label('Manage the order in the next tab!')
 Priority_Channel:Seperator()
 Priority_Channel:Toggle('Placing', getgenv().placePriorityEnabled, function(bool)
@@ -488,9 +496,6 @@ Priority_Channel:Toggle('Upgrading', getgenv().upgradePriorityEnabled, function(
     saveSaveFile()
 end)
 
-local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=4949649813')
-
-local Placing_Channel = PriorityServer:Channel('Placing')
 Placing_Channel:Label('Largest Integer has Highest Priority')
 Placing_Channel:Seperator()
 Placing_Channel:Textbox('Set: Unit 1', getgenv().placePriority['U1'], false, function(num)
@@ -555,7 +560,6 @@ Placing_Channel:Button('Reset Priority', function()
     saveSaveFile()
 end)
 
-local Upgrading_Channel = PriorityServer:Channel('Upgrading')
 Upgrading_Channel:Label('Largest Integer Highest Priority')
 Upgrading_Channel:Seperator()
 Upgrading_Channel:Textbox('Set: Unit 1', getgenv().upgradePriority['U1'], false, function(num)
@@ -621,7 +625,6 @@ Upgrading_Channel:Button('Reset Priority', function()
 end)
 
 --// Tabs [[WEBHOOK]]
-local Webhook_Channel = Server:Channel('Webhook')
 Webhook_Channel:Toggle('Webhook', getgenv().webhook, function(bool)
     getgenv().webhook = bool
     saveSaveFile()
@@ -656,13 +659,13 @@ end)
 
 --// PLACE SPECIFIC
 if game.PlaceId == 8304191830 then
-	Misc_Channel:Seperator()
-	Misc_Channel:Button('Redeem Codes', function()
-		for _, v in next, codes do
-			Endpoints.redeem_code:InvokeServer(v)
-		end
-	end)
-	
+    Misc_Channel:Seperator()
+    Misc_Channel:Button('Redeem Codes', function()
+        for _, v in next, codes do
+            Endpoints.redeem_code:InvokeServer(v)
+        end
+    end)
+
     local summon = function()
         if not getgenv().autoSummonGEM and not getgenv().autoSummonTICKET then return end
         local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
@@ -748,8 +751,9 @@ else
         end)
     end
 
-    Farming_Channel:Seperator()
-    Farming_Channel:Button("Set Unit 1 Postion", function()
+    Position_Channel:Label('Set Unit Spawn Positions')
+    Position_Channel:Seperator()
+    Position_Channel:Button("Set Unit 1 Postion", function()
         DiscordLib:Notification(
             "Set Unit 1 Spawn Position",
             "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
@@ -758,7 +762,7 @@ else
         MouseClick("UP1")
     end)
 
-    Farming_Channel:Button("Set Unit 2 Postion", function()
+    Position_Channel:Button("Set Unit 2 Postion", function()
         DiscordLib:Notification(
             "Set Unit 2 Spawn Position",
             "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
@@ -766,7 +770,7 @@ else
         )
         MouseClick("UP2")
     end)
-    Farming_Channel:Button("Set Unit 3 Postion", function()
+    Position_Channel:Button("Set Unit 3 Postion", function()
         DiscordLib:Notification(
             "Set Unit 3 Spawn Position",
             "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
@@ -774,7 +778,7 @@ else
         )
         MouseClick("UP3")
     end)
-    Farming_Channel:Button("Set Unit 4 Postion", function()
+    Position_Channel:Button("Set Unit 4 Postion", function()
         DiscordLib:Notification(
             "Set Unit 4 Spawn Position",
             "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
@@ -786,7 +790,7 @@ else
     local axxc = Client.LocalPlayer.PlayerGui["spawn_units"].Lives.Main.Desc.Level.Text:split(" ")
 
     if tonumber(axxc[2]) >= 20 then
-        Farming_Channel:Button("Set Unit 5 Postion", function()
+        Position_Channel:Button("Set Unit 5 Postion", function()
             DiscordLib:Notification(
                 "Set Unit 5 Spawn Position",
                 "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
@@ -797,7 +801,7 @@ else
     end
 
     if tonumber(axxc[2]) >= 50 then
-        Farming_Channel:Button("Set Unit 6 Postion", function()
+        Position_Channel:Button("Set Unit 6 Postion", function()
             DiscordLib:Notification(
                 "Set Unit 6 Spawn Position",
                 "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
