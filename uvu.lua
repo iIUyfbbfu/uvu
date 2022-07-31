@@ -186,9 +186,10 @@ loadSaveFile()
 --// Discord
 local Post = function()
     if not getgenv().webhookUrl or getgenv().webhookUrl == '' then return end
+	local color = ((passOrFail == 'PASS') and 110335) or 16711680
     local passOrFail do
         if getgenv().autoSell then
-            if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value) then
+            if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= workspace._wave.Value) then
                 passOrFail = 'PASS'
             else
                 passOrFail = 'FAIL'
@@ -231,7 +232,7 @@ local Post = function()
                     icon_url = 'https://cdn.discordapp.com/emojis/997123585476927558.webp?size=96&quality=lossless'
                 },
                 description = Client.LocalPlayer.Name,
-                color = ((passOrFail == 'PASS') and 110335) or 16711680,
+                color = color,
                 thumbnail = {
                     url = 'https://www.roblox.com/headshot-thumbnail/image?userId=' .. Client.LocalPlayer.UserId .. '&width=420&height=420&format=png'
                 },
