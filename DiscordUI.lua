@@ -462,7 +462,7 @@ function DiscordLib:Window(text)
 		CloseSettingsBtnCircle.BackgroundColor3 = Color3.fromRGB(54, 57, 63)
 	end)
 
-	UserInputService.InputBegan:Connect(function(io, p)
+	Client.UserInputService.InputBegan:Connect(function(io, p)
         if io.KeyCode == Enum.KeyCode.RightControl then
             if settingsopened == true then
                 settingsopened = false
