@@ -814,8 +814,8 @@ Debug_Channel:Button('Re-Align Exploit Ui', function()
     win:ResetWindow()
 end)
 Debug_Channel:Seperator()
-Debug_Channel:Label('---- DANGER ----')
-Debug_Channel:Button('Reset Exploit Data (WARNING! This will clear all saved settings!)', function()
+Debug_Channel:Label('---- DANGER ----\n(WARNING! This will affect current settings!)')
+Debug_Channel:Button('Reset Exploit Data', function()
     for i,v in next, GenvVariables do
         getgenv()[i] = v
     end
