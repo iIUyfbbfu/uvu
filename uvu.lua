@@ -866,7 +866,7 @@ task.spawn(function()
                     end
                 end
             else
-                if not expired and getgenv().autoAbility then
+                if getgenv().autoAbility then
                     for _, v in next, currentUnits do
                         pcall(function()
                             Endpoints.use_active_attack:InvokeServer(v)
@@ -874,7 +874,7 @@ task.spawn(function()
                     end
                 end
     
-                if not expired and getgenv().autoUpgrade then
+                if getgenv().autoUpgrade then
                     local maxUnits = 10
                     local succ, err = pcall(function()
                         for _, v in next, toUpgrade do
@@ -886,8 +886,8 @@ task.spawn(function()
                     end)
                     if not succ then warn(err) end
                 end
-    
-                if not expired then
+
+                do
                     local x = 4
                     local y = 3
                     local z = 4
