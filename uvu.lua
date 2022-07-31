@@ -540,7 +540,7 @@ Placing_Channel:Button('Reset Priority', function()
 end)
 
 local Upgrading_Channel = PriorityServer:Channel('Upgrading')
-Upgrading_Channel:Label('Largest Integer Highest Priority')
+Upgrading_Channel:Label('Largest Integer has Highest Priority')
 Upgrading_Channel:Textbox('Set: Unit 1', getgenv().upgradePriority['U1'], false, function(num)
     if select(1, num:gsub('%D+', '')) == tostring(num) then
         getgenv().upgradePriority['U1'] = num
