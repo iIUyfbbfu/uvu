@@ -264,7 +264,7 @@ end
 
 --// Making UI
 local DiscordLib = loadstring(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/DiscordUI.lua')()
-local win = DiscordLib:Window('Exploit v0.0.1' .. ' - ' .. tostring(identifyexecutor()))
+local win = DiscordLib:Window('Exploit v0.0.3' .. ' - ' .. tostring(identifyexecutor()))
 local Server = win:Server('Anime Adventures', 'http://www.roblox.com/asset/?id=6031075938')
 local ErrorNotif = function(need)
     DiscordLib:Notification(
