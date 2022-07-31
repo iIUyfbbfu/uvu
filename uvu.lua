@@ -252,7 +252,7 @@ end
 
 --// Making UI
 local DiscordLib = loadstring(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/DiscordUI.lua')()
-local win = DiscordLib:Window('Exploit v0.0.2' .. ' - ' .. tostring(identifyexecutor()))
+local win = DiscordLib:Window('Exploit v0.0.1' .. ' - ' .. tostring(identifyexecutor()))
 local Server = win:Server('Anime Adventures', 'http://www.roblox.com/asset/?id=6031075938')
 
 --// Tabs [[MISC]]
@@ -540,7 +540,7 @@ Placing_Channel:Button('Reset Priority', function()
 end)
 
 local Upgrading_Channel = PriorityServer:Channel('Upgrading')
-Upgrading_Channel:Label('Largest Integer has Highest Priority')
+Upgrading_Channel:Label('Largest Integer Highest Priority')
 Upgrading_Channel:Textbox('Set: Unit 1', getgenv().upgradePriority['U1'], false, function(num)
     if select(1, num:gsub('%D+', '')) == tostring(num) then
         getgenv().upgradePriority['U1'] = num
@@ -796,6 +796,9 @@ task.spawn(function()
 
     while task.wait() do
         local _wave = workspace:WaitForChild("_wave_num")
+        local pastWave = function()
+            return tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value)
+        end
         local expired = false
 
         local getCurrentUnits = function()
@@ -814,14 +817,17 @@ task.spawn(function()
             for _, v in next, workspace:WaitForChild('_UNITS'):GetChildren() do
                 if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and v.Name ~= 'aot_generic' then
                     table.insert(currentUnits, v)
-                    for t,v2 in next, getgenv().SelectedUnits do
-                        if string.find(v2:lower(), unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v.Name)]) then
-                            table.insert(toUpgrade, {
-                                Priority = tonumber(getgenv().upgradePriority[t]),
-                                Object = v
-                            })
+                    for t = 1,6 do
+                        local unitinfo = getgenv().SelectedUnits['U'..t]
+                        if unitinfo ~= nil then
+                            local unitinfo_ = unitinfo:split(" #")
+                            if unitinfo_[1]:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v.Name)]) then
+                                table.insert(toUpgrade, {
+                                    Priority = (getgenv().upgradePriorityEnabled and tonumber(getgenv().upgradePriority[t])) or 0,
+                                    Object = v
+                                })
+                            end
                         end
-                        break
                     end
                 end
             end
@@ -831,9 +837,6 @@ task.spawn(function()
                     Unit = i,
                     Priority = tonumber((getgenv().placePriorityEnabled and v) or '0')
                 })
-            end
-            if not getgenv().upgradePriorityEnabled then
-                toUpgrade = currentUnits
             end
 
             table.sort(toUpgrade, function(a, b)
@@ -845,90 +848,92 @@ task.spawn(function()
         end
 
         if getgenv().autoFarm then
-            if getgenv().autoSell and tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value) then --// Auto Sell
-                expired = true
-                for _, v in next, currentUnits do
-                    Endpoints.sell_unit_ingame:InvokeServer(v)
-                end
-            end
-
-            if not expired and getgenv().autoAbility then
-                for _, v in next, currentUnits do
-                    pcall(function()
-                        Endpoints.use_active_attack:InvokeServer(v)
-                    end)
-                end
-            end
-
-            if not expired and getgenv().autoUpgrade then
-                local maxUnits = 10
-                pcall(function()
-                    for _, v in next, toUpgrade do
-                        if v.Object['_stats'] and v.Object['_stats'].upgrade and (v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits) then
-                            Endpoints.upgrade_unit_ingame:InvokeServer(v.Object)
-                        end
+            if pastWave() then
+                if getgenv().autoSell then --// Auto Sell
+                    for _, v in next, currentUnits do
+                        Endpoints.sell_unit_ingame:InvokeServer(v)
                     end
-                end)
-            end
-
-            if not expired then
-                local x = 4
-                local y = 3
-                local z = 4
-
-                for _, v in next, toPlace do
-                    local unitinfo = getgenv().SelectedUnits[v.Unit]
-                    if unitinfo ~= nil then
-                        local unitinfo_ = unitinfo:split(" #")
-                        local pos = getgenv().SpawnUnitPos["UP" .. v.Unit:sub(-1)]
-                        local checkCount = function(num)
-                            local count = 0
-                            for _, v2 in next, getCurrentUnits() do
-                                if unitinfo_[1]:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
-                                    count = count + 1
-                                end
+                end
+            else
+                if not expired and getgenv().autoAbility then
+                    for _, v in next, currentUnits do
+                        pcall(function()
+                            Endpoints.use_active_attack:InvokeServer(v)
+                        end)
+                    end
+                end
+    
+                if not expired and getgenv().autoUpgrade then
+                    local maxUnits = 10
+                    local succ, err = pcall(function()
+                        for _, v in next, toUpgrade do
+                            if v.Object['_stats'] and v.Object['_stats'].upgrade and ((v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits)) then
+                                Endpoints.upgrade_unit_ingame:InvokeServer(v.Object)
                             end
-                            return (count >= num)
                         end
-
-                        repeat
-                        -- place units 0
-                            Endpoints.spawn_unit:InvokeServer(
-                                unitinfo_[2],
-                                CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                            )
-
-                            -- place units 1
-                            Endpoints.spawn_unit:InvokeServer(
-                                unitinfo_[2],
-                                CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                            )
-
-                            -- place units 2 
-                            Endpoints.spawn_unit:InvokeServer(
-                                unitinfo_[2],
-                                CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                            )
-
-                            -- place units 3 
-                            Endpoints.spawn_unit:InvokeServer(
-                                unitinfo_[2],
-                                CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                            )
-
-                            -- place units 4
-                            Endpoints.spawn_unit:InvokeServer(
-                                unitinfo_[2],
-                                CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                            )
-
-                            -- place units 5
-                            Endpoints.spawn_unit:InvokeServer(
-                                unitinfo_[2],
-                                CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                            )
-                            task.wait()
-                        until checkCount(1)
+                    end)
+                    if not succ then warn(err) end
+                end
+    
+                if not expired then
+                    local x = 4
+                    local y = 3
+                    local z = 4
+    
+                    for _, v in next, toPlace do
+                        local unitinfo = getgenv().SelectedUnits[v.Unit]
+                        if unitinfo ~= nil then
+                            local unitinfo_ = unitinfo:split(" #")
+                            local pos = getgenv().SpawnUnitPos["UP" .. v.Unit:sub(-1)]
+                            local checkCount = function(num)
+                                local count = 0
+                                for _, v2 in next, getCurrentUnits() do
+                                    if unitinfo_[1]:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
+                                        count = count + 1
+                                    end
+                                end
+                                return (count >= num)
+                            end
+    
+                            repeat
+                            -- place units 0
+                                Endpoints.spawn_unit:InvokeServer(
+                                    unitinfo_[2],
+                                    CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                )
+    
+                                -- place units 1
+                                Endpoints.spawn_unit:InvokeServer(
+                                    unitinfo_[2],
+                                    CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                )
+    
+                                -- place units 2 
+                                Endpoints.spawn_unit:InvokeServer(
+                                    unitinfo_[2],
+                                    CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                )
+    
+                                -- place units 3 
+                                Endpoints.spawn_unit:InvokeServer(
+                                    unitinfo_[2],
+                                    CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                )
+    
+                                -- place units 4
+                                Endpoints.spawn_unit:InvokeServer(
+                                    unitinfo_[2],
+                                    CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                )
+    
+                                -- place units 5
+                                Endpoints.spawn_unit:InvokeServer(
+                                    unitinfo_[2],
+                                    CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                )
+                                task.wait()
+                            until checkCount(1)
+                        end
                     end
                 end
             end
