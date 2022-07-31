@@ -891,7 +891,7 @@ task.spawn(function()
                             return count >= num
                         end
 
-                        repeat
+                        --repeat
                         -- place units 0
                             Endpoints.spawn_unit:InvokeServer(
                                 unitinfo_[2],
@@ -928,7 +928,7 @@ task.spawn(function()
                                 CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
                             )
                             task.wait()
-                        until checkCount(1)
+                        --until checkCount(1)
                     end
                 end
             end
