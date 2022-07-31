@@ -868,7 +868,8 @@ task.spawn(function()
                     local succ, err = pcall(function()
                         for _, v in next, toUpgrade do
                             if v.Object['_stats'] and v.Object['_stats'].upgrade and ((v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits)) then
-                                Endpoints.upgrade_unit_ingame:InvokeServer(v.Object)
+                                local start = tick()
+                                repeat Endpoints.upgrade_unit_ingame:InvokeServer(v.Object); task.wait(0.01) until (tick() - start) >= v.Priority
                             end
                         end
                     end)
@@ -883,6 +884,7 @@ task.spawn(function()
                     for _, v in next, toPlace do
                         local unitinfo = getgenv().SelectedUnits[v.Unit]
                         if unitinfo ~= nil then
+                            local start = tick()
                             local unitinfo_ = unitinfo:split(" #")
                             local pos = getgenv().SpawnUnitPos["UP" .. v.Unit:sub(-1)]
                             local checkCount = function(num)
@@ -894,7 +896,7 @@ task.spawn(function()
                                 end
                                 return (count >= num)
                             end
-    
+
                             repeat
                             -- place units 0
                                 Endpoints.spawn_unit:InvokeServer(
@@ -932,7 +934,7 @@ task.spawn(function()
                                     CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
                                 )
                                 task.wait()
-                            until checkCount(1)
+                            until checkCount(1) or ((tick() - start) >= v.Priority)
                         end
                     end
                 end
