@@ -265,6 +265,13 @@ end
 local DiscordLib = loadstring(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/DiscordUI.lua')()
 local win = DiscordLib:Window('Exploit v0.0.1' .. ' - ' .. tostring(identifyexecutor()))
 local Server = win:Server('Anime Adventures', 'http://www.roblox.com/asset/?id=6031075938')
+local ErrorNotif = function(need)
+    DiscordLib:Notification(
+        'Warning',
+        'Please input a ' .. need .. '!',
+        'Okay'
+    )
+end
 
 --// Tabs [[MISC]]
 local Misc_Channel = Server:Channel('Misc')
@@ -418,8 +425,12 @@ Farming_Channel:Toggle("Auto Sell at Spectic Wave", getgenv().autoSell, function
     saveSaveFile()
 end)
 Farming_Channel:Textbox("Select Wave Number for Auto Sell {Press Enter}", getgenv().sellAtWave or 'nil', false, function(num)
-    getgenv().sellAtWave = num
-    saveSaveFile()
+    if select(1, num:gsub('%D+', '')) == tostring(num) then
+        getgenv().placePriority['U1'] = num
+        saveSaveFile()
+    else
+        ErrorNotif('Integer')
+    end
 end)
 Farming_Channel:Dropdown("Select World", {"Plannet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford"}, getgenv().world, function(world)
     getgenv().world = world
@@ -479,13 +490,6 @@ Priority_Channel:Toggle('Upgrading', getgenv().upgradePriorityEnabled, function(
 end)
 
 local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=10033395415')
-local ErrorNotif = function(need)
-    DiscordLib:Notification(
-        'Warning',
-        'Please input a ' .. need .. '!',
-        'Okay'
-    )
-end
 
 local Placing_Channel = PriorityServer:Channel('Placing')
 Placing_Channel:Label('Largest Integer has Highest Priority')
