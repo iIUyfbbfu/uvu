@@ -494,7 +494,7 @@ Priority_Channel:Toggle('Upgrading', getgenv().upgradePriorityEnabled, function(
     saveSaveFile()
 end)
 
-local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=10033395415')
+local PriorityServer = win:Server('Priority', 'http://www.roblox.com/asset/?id=4949649813')
 
 local Placing_Channel = PriorityServer:Channel('Placing')
 Placing_Channel:Label('Largest Integer has Highest Priority')
