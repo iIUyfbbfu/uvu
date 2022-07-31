@@ -186,7 +186,7 @@ loadSaveFile()
 --// Discord
 local Post = function()
     if not getgenv().webhookUrl or getgenv().webhookUrl == '' then return end
-	local color = ((passOrFail == 'PASS') and 110335) or 16711680
+    local color = ((passOrFail == 'PASS') and 110335) or 16711680
     local passOrFail do
         if getgenv().autoSell then
             if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= game.Workspace._wave.Value) then
@@ -806,6 +806,26 @@ else
         end)
     end
 end
+
+--// Tabs [[DEBUG]]
+local DebugServer = win:Server('Debug', 'http://www.roblox.com/asset/?id=10425947463')
+local Debug_Channel = DebugServer:Channel('Reset')
+Debug_Channel:Button('Re-Align Exploit Ui', function()
+    win:ResetWindow()
+end)
+Debug_Channel:Seperator()
+Debug_Channel:Label('---- DANGER ----')
+Debug_Channel:Button('Reset Exploit Data (WARNING! This will clear all saved settings!)', function()
+    for i,v in next, GenvVariables do
+        getgenv()[i] = v
+    end
+    saveSaveFile()
+    DiscordLib:Notification(
+        'NOTICE',
+        'Reset All Saved Exploit Data!',
+        'Okay'
+    )
+end)
 
 --// Auto Sell and Abilities and Upgrade
 task.spawn(function()
