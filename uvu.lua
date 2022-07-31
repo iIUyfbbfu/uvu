@@ -856,7 +856,7 @@ task.spawn(function()
         local getCurrentUnits = function()
             local curr = {}
             for _, v in next, workspace:WaitForChild('_UNITS'):GetChildren() do
-                if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and v.Name ~= 'aot_generic' then
+                if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
                     table.insert(curr, v)
                 end
             end
@@ -867,7 +867,7 @@ task.spawn(function()
             currentUnits, toUpgrade, toPlace = {}, {}, {}
 
             for _, v in next, workspace:WaitForChild('_UNITS'):GetChildren() do
-                if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and v.Name ~= 'aot_generic' then
+                if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
                     table.insert(currentUnits, v)
                     for t = 1,6 do
                         local unitinfo = getgenv().SelectedUnits['U'..t]
