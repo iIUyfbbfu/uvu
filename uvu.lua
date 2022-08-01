@@ -872,7 +872,8 @@ task.spawn(function()
                     pcall(function()
                         local upgrades = v._stats.upgrade.Value
                         local lastCast = v._stats.last_active_cast.Value
-
+			
+			print(tick() - getgenv().lastErwin, tick() - lastCast)
                         if (upgrades >= 3) and (v.Name:lower() == 'erwin') and ((tick() - getgenv().lastErwin) >= 35) and (tick() - lastCast) >= 35 then
                             getgenv().lastErwin = tick()
                             Endpoints.use_active_attack:InvokeServer(v)
