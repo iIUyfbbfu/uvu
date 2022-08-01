@@ -180,6 +180,7 @@ local saveSaveFile = function()
     writefile(saveFileName, json)
 end
 
+getgenv().lastErwin = 0
 getgenv().levels = getgenv().levels or {}
 loadSaveFile()
 
@@ -864,6 +865,24 @@ task.spawn(function()
         end
     end)
 
+    task.spawn(function() --// Ability
+        while task.wait() do
+            if getgenv().autoAbility then
+                for _, v in next, getCurrentUnits() do
+                    pcall(function()
+                        if (v.Name:lower() == 'erwin') and (tick() - getgenv().lastErwin) >= 35 then
+                            getgenv().lastErwin = tick()
+                            Endpoints.use_active_attack:InvokeServer(v)
+                        elseif v.Name:lower() ~= 'erwin' then
+                            Endpoints.use_active_attack:InvokeServer(v)
+                        end
+                    end)
+                end
+            end
+            task.wait()
+        end
+    end)
+
     while task.wait() do
         local currentUnits, toUpgrade, toPlace do
             currentUnits, toUpgrade, toPlace = getCurrentUnits(), {}, {}
@@ -908,14 +927,6 @@ task.spawn(function()
                     end
                 end
             else
-                if getgenv().autoAbility then
-                    for _, v in next, currentUnits do
-                        pcall(function()
-                            Endpoints.use_active_attack:InvokeServer(v)
-                        end)
-                    end
-                end
-    
                 if getgenv().autoUpgrade then
                     local maxUnits = 10
                     local succ, err = pcall(function()
