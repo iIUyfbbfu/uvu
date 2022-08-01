@@ -432,7 +432,7 @@ Farming_Channel:Toggle("Auto Sell at Spectic Wave", getgenv().autoSell, function
     getgenv().autoSell = bool
     saveSaveFile()
 end)
-Farming_Channel:Textbox("Select Wave Number for Auto Sell {Press Enter}", getgenv().sellAtWave, true, function(num)
+Farming_Channel:Textbox("Select Wave Number for Auto Sell {Press Enter}", getgenv().sellAtWave, false, function(num)
     if select(1, num:gsub('%D+', '')) == tostring(num) then
         getgenv().sellAtWave = num
         saveSaveFile()
