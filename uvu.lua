@@ -870,7 +870,10 @@ task.spawn(function()
             if getgenv().autoAbility then
                 for _, v in next, getCurrentUnits() do
                     pcall(function()
-                        if (v.Name:lower() == 'erwin') and (tick() - getgenv().lastErwin) >= 35 then
+                        local upgrades = v._stats.upgrade.Value
+                        local lastCast = v._stats.last_active_cast.Value
+
+                        if (upgrades >= 3) and (v.Name:lower() == 'erwin') and ((tick() - getgenv().lastErwin) >= 35) and (tick() - lastCast) >= 35 then
                             getgenv().lastErwin = tick()
                             Endpoints.use_active_attack:InvokeServer(v)
                         elseif v.Name:lower() ~= 'erwin' then
