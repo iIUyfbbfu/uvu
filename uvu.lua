@@ -197,7 +197,7 @@ local Post = function()
             passOrFail = 'PASS'
         end
     end
-	local color = ((passOrFail == 'PASS') and 110335) or 16711680
+    local color = ((passOrFail == 'PASS') and 110335) or 16711680
 
     local Stats = Client.LocalPlayer:WaitForChild('_stats')
     local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
@@ -835,7 +835,25 @@ end)
 --// Auto Sell and Abilities and Upgrade
 task.spawn(function()
     if game.PlaceId == 8304191830 then return end
+
+    local _UNITS = workspace:WaitForChild('_UNITS')
+    local _wave = workspace:WaitForChild('_wave_num')
     local GameFinished = workspace:WaitForChild("_DATA"):WaitForChild("GameFinished")
+
+    local pastWave = function()
+        return tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value)
+    end
+    local getCurrentUnits = function()
+        local curr = {}
+        for _, v in next, _UNITS:GetChildren() do
+            if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
+                table.insert(curr, v)
+            end
+        end
+        return curr
+    end
+
+
     GameFinished:GetPropertyChangedSignal("Value"):Connect(function()
         if GameFinished.Value == true then
             repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Enabled == true
@@ -847,28 +865,11 @@ task.spawn(function()
     end)
 
     while task.wait() do
-        local _wave = workspace:WaitForChild("_wave_num")
-        local pastWave = function()
-            return tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value)
-        end
-        local expired = false
-
-        local getCurrentUnits = function()
-            local curr = {}
-            for _, v in next, workspace:WaitForChild('_UNITS'):GetChildren() do
-                if v:FindFirstChild('_stats') and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) and (v._stats.player.Value == Client.LocalPlayer) then
-                    table.insert(curr, v)
-                end
-            end
-            return curr
-        end
-
         local currentUnits, toUpgrade, toPlace do
-            currentUnits, toUpgrade, toPlace = {}, {}, {}
+            currentUnits, toUpgrade, toPlace = getCurrentUnits(), {}, {}
 
-            for _, v in next, workspace:WaitForChild('_UNITS'):GetChildren() do
-                if v:FindFirstChild('_stats') and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) and (v._stats.player.Value == Client.LocalPlayer) then
-                    table.insert(currentUnits, v)
+            for _, v in next, currentUnits do
+                pcall(function()
                     for t = 1,6 do
                         local unitinfo = getgenv().SelectedUnits['U'..t]
                         if unitinfo ~= nil then
@@ -881,7 +882,7 @@ task.spawn(function()
                             end
                         end
                     end
-                end
+                end)
             end
 
             for i, v in next, getgenv().placePriority do
@@ -993,6 +994,7 @@ task.spawn(function()
             end
         end
     end
+
 end)
 
 --// Auto Start and Sell Unit
