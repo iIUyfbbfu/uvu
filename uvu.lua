@@ -867,7 +867,7 @@ task.spawn(function()
 
     task.spawn(function() --// Ability
         while task.wait() do
-            if getgenv().autoAbility then
+            if getgenv().autoAbility and not pastWave() then
                 for _, v in next, getCurrentUnits() do
                     pcall(function()
                         local upgrades = v._stats.upgrade.Value
