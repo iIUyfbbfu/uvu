@@ -188,7 +188,7 @@ loadSaveFile()
 local Post = function()
     if not getgenv().webhookUrl or getgenv().webhookUrl == '' then return end
     local passOrFail do
-        if getgenv().autoSell then
+        if getgenv().autoSell and workspace:FindFirstChild('_is_last_wave').Value ~= true then
             if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= workspace:FindFirstChild('_wave_num').Value) then
                 passOrFail = 'PASS'
             else
