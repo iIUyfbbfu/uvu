@@ -441,7 +441,7 @@ Farming_Channel:Textbox("Select Wave Number for Auto Sell {Press Enter}", getgen
         ErrorNotif('Integer')
     end
 end)
-Farming_Channel:Dropdown("Select World", {"Plannet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford"}, getgenv().world, function(world)
+Farming_Channel:Dropdown("Select World", {"Plannet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford", "Ghoul City"}, getgenv().world, function(world)
     getgenv().world = world
     saveSaveFile()
 
@@ -474,7 +474,13 @@ Farming_Channel:Dropdown("Select World", {"Plannet Namak", "Shiganshinu District
         table.clear(levels)
         getgenv().levels = {"marineford_infinite", "marineford_level_1", "marineford_level_2", "marineford_level_3", "marineford_level_4", "marineford_level_5", "marineford_level_6"}
         for _, v in ipairs(levels) do getgenv().leveldrop:Add(v) end
-    end
+    
+	elseif world == "Ghoul City" then
+		getgenv().leveldrop:Clear()
+		table.clear(levels)
+		getgenv().levels = {"tokyoghoul_infinite", "tokyoghoul_level_1", "tokyoghoul_level_2", "tokyoghoul_level_3", "tokyoghoul_level_4", "tokyoghoul_level_5", "tokyoghoul_level_6"}
+		for _, v in ipairs(levels) do getgenv().leveldrop:Add(v) end
+	end
 end)
 getgenv().leveldrop = Farming_Channel:Dropdown("Select Level", getgenv().levels, getgenv().level, function(level)
     getgenv().level = level
