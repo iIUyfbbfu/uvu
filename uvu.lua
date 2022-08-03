@@ -902,7 +902,7 @@ task.spawn(function()
         while task.wait() do
             if getgenv().autoAbility and not pastWave() then
                 for _, v in next, getCurrentUnits() do
-                    pcall(function()
+                    local s, e = pcall(function()
                         local upgrades = v._stats.upgrade.Value
                         local lastCast = v._stats.last_active_cast.Value
 
@@ -914,6 +914,7 @@ task.spawn(function()
                             Endpoints.use_active_attack:InvokeServer(v)
                         end
                     end)
+                    if not s then print(e) end
                 end
             end
             task.wait()
