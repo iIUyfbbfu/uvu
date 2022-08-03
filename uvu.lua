@@ -975,7 +975,7 @@ task.spawn(function()
                             if v.Object['_stats'] and v.Object['_stats'].upgrade and ((v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits)) then
                                 local start = tick()
                                 repeat
-                                    Endpoints.upgrade_unit_ingame:InvokeServer(v.Object);
+                                    pcall(function() Endpoints.upgrade_unit_ingame:InvokeServer(v.Object) end)
                                     task.wait(0.01)
                                 until (tick() - start) >= v.Priority
                             end
