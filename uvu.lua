@@ -787,52 +787,63 @@ else
 
     function MouseClick(UnitPos)
         local connection
-        connection = Client.UserInputService.InputBegan:Connect(
-            function(input, gameProcessed)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    connection:Disconnect()
-                    local a = Instance.new("Part", game.Workspace)
-                    a.Size = Vector3.new(1, 1, 1)
-                    a.Material = Enum.Material.Neon
-                    a.Position = Client.Mouse.hit.p
+        connection = Client.UserInputService.InputBegan:Connect(function(input, gameProcessed)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                connection:Disconnect()
+                local a = Instance.new("Part", game.Workspace)
+                a.Size = Vector3.new(1, 1, 1)
+                a.Material = Enum.Material.Neon
+                a.Position = Client.Mouse.hit.p
+                task.wait()
+                a.Anchored = true
+                DiscordLib:Notification("Spawn Unit Posotion:", tostring(a.Position), "Okay!")
+                a.CanCollide = false
+                for i = 0, 1, 0.1 do
+                    a.Transparency = i
                     task.wait()
-                    a.Anchored = true
-                    DiscordLib:Notification("Spawn Unit Posotion:", tostring(a.Position), "Okay!")
-                    a.CanCollide = false
-                    for i = 0, 1, 0.1 do
-                        a.Transparency = i
-                        task.wait()
-                    end
-                    a:Destroy()
-                    SpawnUnitPos[UnitPos]["x"] = a.Position.X
-                    SpawnUnitPos[UnitPos]["y"] = a.Position.Y
-                    SpawnUnitPos[UnitPos]["z"] = a.Position.Z
-                    saveSaveFile()
                 end
-            end)
+                a:Destroy()
+                SpawnUnitPos[UnitPos]["x"] = a.Position.X
+                SpawnUnitPos[UnitPos]["y"] = a.Position.Y
+                SpawnUnitPos[UnitPos]["z"] = a.Position.Z
+                saveSaveFile()
+            end
+        end)
     end
 
     Position_Channel:Label('Set Unit Spawn Positions')
     Position_Channel:Seperator()
     Position_Channel:Button("Set Unit 1 Postion", function()
-        DiscordLib:Notification("Set Unit 1 Spawn Position",
-            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)", "Done")
+        DiscordLib:Notification(
+            "Set Unit 1 Spawn Position",
+            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
+            "Done"
+        )
         MouseClick("UP1")
     end)
 
     Position_Channel:Button("Set Unit 2 Postion", function()
-        DiscordLib:Notification("Set Unit 2 Spawn Position",
-            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)", "Done")
+        DiscordLib:Notification(
+            "Set Unit 2 Spawn Position",
+            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
+            "Done"
+        )
         MouseClick("UP2")
     end)
     Position_Channel:Button("Set Unit 3 Postion", function()
-        DiscordLib:Notification("Set Unit 3 Spawn Position",
-            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)", "Done")
+        DiscordLib:Notification(
+            "Set Unit 3 Spawn Position",
+            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
+            "Done"
+        )
         MouseClick("UP3")
     end)
     Position_Channel:Button("Set Unit 4 Postion", function()
-        DiscordLib:Notification("Set Unit 4 Spawn Position",
-            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)", "Done")
+        DiscordLib:Notification(
+            "Set Unit 4 Spawn Position",
+            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
+            "Done"
+        )
         MouseClick("UP4")
     end)
 
@@ -840,18 +851,22 @@ else
 
     if tonumber(axxc[2]) >= 20 then
         Position_Channel:Button("Set Unit 5 Postion", function()
-            DiscordLib:Notification("Set Unit 5 Spawn Position",
+            DiscordLib:Notification(
+                "Set Unit 5 Spawn Position",
                 "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
-                "Done")
+                "Done"
+            )
             MouseClick("UP5")
         end)
     end
 
     if tonumber(axxc[2]) >= 50 then
         Position_Channel:Button("Set Unit 6 Postion", function()
-            DiscordLib:Notification("Set Unit 6 Spawn Position",
+            DiscordLib:Notification(
+                "Set Unit 6 Spawn Position",
                 "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
-                "Done")
+                "Done"
+            )
             MouseClick("UP6")
         end)
     end
@@ -884,8 +899,7 @@ task.spawn(function()
     local GameFinished = workspace:WaitForChild("_DATA"):WaitForChild("GameFinished")
 
     local pastWave = function()
-        return tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and
-                   (tonumber(getgenv().sellAtWave) <= _wave.Value)
+        return tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value)
     end
     local getCurrentUnits = function()
         local curr = {}
@@ -945,7 +959,6 @@ task.spawn(function()
                         local unitinfo = getgenv().SelectedUnits['U' .. t]
                         if unitinfo ~= nil then
                             local unitinfo_ = unitinfo:split(" #")
-                            print(unitinfo_[1], unitConversion.searchForCollectable(v.Name, unitinfo_[1]:lower()))
                             if unitConversion.searchForCollectable(v.Name, unitinfo_[1]:lower()) then
                                 table.insert(toUpgrade, {
                                     Priority = (getgenv().upgradePriorityEnabled and tonumber(getgenv().upgradePriority[t])) or 0,
