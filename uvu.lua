@@ -882,6 +882,13 @@ task.spawn(function()
         end
         return curr
     end
+    local searchForUnitCollectableName = function(vName)
+        for i, v in next, unitConversion.InGameUnitName do
+            if v == vName then
+                return i
+            end
+        end
+    end
 
     GameFinished:GetPropertyChangedSignal("Value"):Connect(function()
         if GameFinished.Value == true then
@@ -931,8 +938,7 @@ task.spawn(function()
                         local unitinfo = getgenv().SelectedUnits['U' .. t]
                         if unitinfo ~= nil then
                             local unitinfo_ = unitinfo:split(" #")
-                            if unitinfo_[1]:lower():find(unitConversion.CollectableName[table.find(
-                                unitConversion.InGameUnitName, v.Name)]) then
+                            if unitinfo_[1]:lower():find(unitConversion.CollectableName[searchForUnitCollectableName(v.Name)]) then
                                 table.insert(toUpgrade, {
                                     Priority = (getgenv().upgradePriorityEnabled and tonumber(getgenv().upgradePriority[t])) or 0,
                                     Object = v
@@ -966,9 +972,7 @@ task.spawn(function()
                     local maxUnits = 10
                     local succ, err = pcall(function()
                         for _, v in next, toUpgrade do
-                            if v.Object['_stats'] and v.Object['_stats'].upgrade and
-                                ((v.Object['_stats'].upgrade.Value == 0) or
-                                    (v.Object['_stats'].upgrade.Value <= maxUnits)) then
+                            if v.Object['_stats'] and v.Object['_stats'].upgrade and ((v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits)) then
                                 local start = tick()
                                 repeat
                                     Endpoints.upgrade_unit_ingame:InvokeServer(v.Object);
@@ -994,8 +998,7 @@ task.spawn(function()
                             local checkCount = function(num)
                                 local count = 0
                                 for _, v2 in next, getCurrentUnits() do
-                                    if unitinfo_[1]:lower():find(
-                                        unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
+                                    if unitinfo_[1]:lower():find(unitConversion.CollectableName[searchForUnitCollectableName(v2.Name)]) then
                                         count = count + 1
                                     end
                                 end
