@@ -2,7 +2,7 @@
   "__IGNORE": {"Collectable Name" : "In-Game Unit Name"},
   
   
-  "__IGNORE": {"MYTHICS": true},
+  "__IGNORE": {"MYTHICS": "true"},
   "_": {"CollectableName": "brulo", "UnitName": "broly"},
   "_": {"CollectableName": "legendary brulo", "UnitName": "broly"},
   
@@ -23,7 +23,7 @@
   "_": {"CollectableName": "ariva", "UnitName": "arima"},
   
   
-  "__IGNORE": {"LEGENDS": true},
+  "__IGNORE": {"LEGENDS": "true"},
   "_": {"CollectableName": "orwin", "UnitName": "erwin"},
   
   "_": {"CollectableName": "blackhair", "UnitName": "blackbeard"},
@@ -35,6 +35,6 @@
   "_": {"CollectableName": "blumy", "UnitName": "bulma"},
   
   
-  "__IGNORE": {"EPICS": true},
+  "__IGNORE": {"EPICS": "true"},
   "_": {"CollectableName": "speedcart", "UnitName": "speedwagon"},
 }
