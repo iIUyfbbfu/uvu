@@ -15,7 +15,7 @@ local GenvVariables = {
     
     --FARM
     autoSell = false,
-    autoFarm = false,
+    autoPlace = false,
     autoStart = false,
     autoAbility = false,
     autoSummonGEM = false,
@@ -416,8 +416,8 @@ Farming_Channel:Toggle('Auto Start', getgenv().autoStart, function(bool)
     saveSaveFile()
 end)
 Farming_Channel:Seperator()
-Farming_Channel:Toggle('Auto Farm', getgenv().autoFarm, function(bool)
-    getgenv().autoFarm = bool
+Farming_Channel:Toggle('Auto Place', getgenv().autoPlace, function(bool)
+    getgenv().autoPlace = bool
     saveSaveFile()
 end)
 Farming_Channel:Toggle("Auto Upgrade Units", getgenv().autoUpgrade, function(bool)
