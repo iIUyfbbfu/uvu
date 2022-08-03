@@ -36,5 +36,5 @@
   
   
   "__IGNORE": {"EPICS": "true"},
-  "_": {"CollectableName": "speedcart", "UnitName": "speedwagon"},
+  "_": {"CollectableName": "speedcart", "UnitName": "speedwagon"}
 }
