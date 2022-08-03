@@ -1006,9 +1006,11 @@ task.spawn(function()
                             local checkCount = function(num)
                                 local count = 0
                                 for _, v2 in next, getCurrentUnits() do
-                                    if unitinfo_[1]:lower():find(unitConversion.searchForCollectable(v2.Name)) then
-                                        count = count + 1
-                                    end
+                                    pcall(function()
+                                        if unitinfo_[1]:lower():find(unitConversion.searchForCollectable(v2.Name)) then
+                                            count = count + 1
+                                        end
+                                    end)
                                 end
                                 return (count >= num)
                             end
