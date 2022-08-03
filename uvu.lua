@@ -12,7 +12,7 @@ getgenv().saveFileName = 'Anime-Adventures_' .. Client.LocalPlayer.Name .. '.jso
 
 -- // VARIABLES
 local codes = Client.HttpService:JSONDecode(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/codes.json')
-local unitConversion = Client.HttpService:JSONDecode(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/unitConversion.json')
+local __unitConversion = Client.HttpService:JSONDecode(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/unitConversion.json')
 local GenvVariables = {
     -- MISC
     hideName = false,
@@ -113,18 +113,25 @@ local Endpoints = setmetatable({}, {
     end
 })
 
-do
-    local new = {}
-    local new2 = {}
-
-    for i, v in next, unitConversion do
-        table.insert(new, i)
-        table.insert(new2, v)
-    end
-
+local unitConversion do
+    for i,_ in next, __unitConversion do if i == '__IGNORE' then __unitConversion[i] = nil end end
+    
     unitConversion = {
-        CollectableName = new,
-        InGameUnitName = new2
+        searchForCollectable = function(inGameUnitName)
+            for _, v in next, __unitConversion do
+                if v.UnitName:lower() == inGameUnitName:lower() then
+                    return v.CollectableName
+                end
+            end
+        end,
+        searchForUnit = function(CollectableName)
+            for _, v in next, __unitConversion do
+                if v.CollectableName:lower() == CollectableName:lower() then
+                    return v.UnitName
+                end
+            end
+        end,
+        raw = __unitConversion,
     }
 end
 
@@ -939,7 +946,7 @@ task.spawn(function()
                         if unitinfo ~= nil then
                             local unitinfo_ = unitinfo:split(" #")
                             print(unitinfo_[1], searchForUnitCollectableName(v.Name), unitConversion.CollectableName[searchForUnitCollectableName(v.Name)])
-                            if unitinfo_[1]:lower():find(unitConversion.CollectableName[searchForUnitCollectableName(v.Name)]) then
+                            if unitinfo_[1]:lower():find(unitConversion.searchForCollectable(v.Name)) then
                                 table.insert(toUpgrade, {
                                     Priority = (getgenv().upgradePriorityEnabled and tonumber(getgenv().upgradePriority[t])) or 0,
                                     Object = v
@@ -999,7 +1006,7 @@ task.spawn(function()
                             local checkCount = function(num)
                                 local count = 0
                                 for _, v2 in next, getCurrentUnits() do
-                                    if unitinfo_[1]:lower():find(unitConversion.CollectableName[searchForUnitCollectableName(v2.Name)]) then
+                                    if unitinfo_[1]:lower():find(unitConversion.searchForCollectable(v2.Name)) then
                                         count = count + 1
                                     end
                                 end
