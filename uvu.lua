@@ -1,27 +1,33 @@
 repeat task.wait() until game.Loaded
 
-local Client = setmetatable({}, {__index = function(self, Value) return rawget(self,Value) or game:GetService(Value) end})
+local Client = setmetatable({}, {
+    __index = function(self, Value)
+        return rawget(self, Value) or game:GetService(Value)
+    end
+})
 Client.LocalPlayer = Client.Players.LocalPlayer
 Client.Mouse = Client.LocalPlayer:GetMouse()
 
 getgenv().saveFileName = 'Anime-Adventures_' .. Client.LocalPlayer.Name .. '.json'
 
---// VARIABLES
+-- // VARIABLES
+local codes = Client.HttpService:JSONDecode(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/codes.json')
 local unitConversion = Client.HttpService:JSONDecode(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/unitConversion.json')
 local GenvVariables = {
     -- MISC
     hideName = false,
     antiAfk = true,
-    
-    --FARM
+
+    -- FARM
     autoSell = false,
+    autoFarm = false,
     autoPlace = false,
     autoStart = false,
     autoAbility = false,
     autoSummonGEM = false,
     autoSummonTICKET = false,
     autoUpgrade = false,
-    
+
     world = false,
     difficulty = 'Normal',
     sellAtWave = 0,
@@ -99,43 +105,13 @@ local GenvVariables = {
     autoUnitSell = false,
     unitTypeToSell = false,
     level = 'nil',
-    door = 'nil',
+    door = 'nil'
 }
-local Endpoints = setmetatable(
-    {
-        'spawn_unit',
-        'redeem_code',
-        'vote_wave_skip',
-        'sell_unit_ingame',
-        'use_active_attack',
-        'buy_random_fighter',
-        'upgrade_unit_ingame',
-        'save_notifications_state'
-    },
-    {__index = function(_, Value) return Client.ReplicatedStorage.endpoints['client_to_server'][Value] end}
-)
-
-local codes = {
-    'FIRSTRAIDS',
-    'DATAFIX',
-    'MARINEFORD',
-    'TWOMILLION',
-    'SORRYFORSHUTDOWN',
-    'CHALLENGEFIX',
-    'GINYUFIX',
-    'RELEASE',
-
-    'subtomaokuma',
-    'subtosnowrbx',
-    'SubToKelvingts',
-    'SubToBlamspot',
-    
-    'KingLuffy',
-    'TOADBOIGAMING',
-    'noclypso',
-    'FictioNTheFirst',
-    'Cxrsed'
-}
+local Endpoints = setmetatable({}, {
+    __index = function(_, Value)
+        return Client.ReplicatedStorage.endpoints['client_to_server'][Value]
+    end
+})
 
 do
     local new = {}
@@ -152,9 +128,10 @@ do
     }
 end
 
---// JSON Settings Save File
+-- // JSON Settings Save File
 local loadSaveFile = function()
-    local jsonData do
+    local jsonData
+    do
         if not isfile(saveFileName) then
             writefile(saveFileName, Client.HttpService:JSONEncode(GenvVariables))
         end
@@ -162,7 +139,7 @@ local loadSaveFile = function()
     end
     local data = Client.HttpService:JSONDecode(jsonData)
 
-    table.foreach(GenvVariables, function(i,v)
+    table.foreach(GenvVariables, function(i, v)
         if data[i] then
             getgenv()[i] = data[i]
         else
@@ -173,7 +150,7 @@ end
 
 local saveSaveFile = function()
     local data = {}
-    table.foreach(GenvVariables, function(i,_)
+    table.foreach(GenvVariables, function(i, _)
         data[i] = getgenv()[i]
     end)
     local json = Client.HttpService:JSONEncode(data)
@@ -184,12 +161,16 @@ getgenv().lastErwin = 0
 getgenv().levels = getgenv().levels or {}
 loadSaveFile()
 
---// Discord
+-- // Discord
 local Post = function()
-    if not getgenv().webhookUrl or getgenv().webhookUrl == '' then return end
-    local passOrFail do
+    if not getgenv().webhookUrl or getgenv().webhookUrl == '' then
+        return
+    end
+    local passOrFail
+    do
         if getgenv().autoSell and workspace:FindFirstChild('_is_last_wave').Value ~= true then
-            if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= workspace:FindFirstChild('_wave_num').Value) then
+            if tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and
+                (tonumber(getgenv().sellAtWave) <= workspace:FindFirstChild('_wave_num').Value) then
                 passOrFail = 'PASS'
             else
                 passOrFail = 'FAIL'
@@ -204,53 +185,78 @@ local Post = function()
     local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
     local Holder = PlayerGui:WaitForChild('ResultsUI'):WaitForChild('Holder')
 
-    local WaveCount do
-        local succ,_ = pcall(function() WaveCount = select(1, Holder:WaitForChild('Middle'):WaitForChild('WavesCompleted').Text:gsub('%D+','')) end)
-        if not succ or WaveCount == '999' then succ,_ = pcall(function() WaveCount = PlayerGui:WaitForChild('Waves'):WaitForChild('HealthBar'):WaitForChild('WaveNumber').Text end) end
-        if not succ then WaveCount = 'Unable to Obtain Data!' end
+    local WaveCount
+    do
+        local succ, _ = pcall(function()
+            WaveCount = select(1, Holder:WaitForChild('Middle'):WaitForChild('WavesCompleted').Text:gsub('%D+', ''))
+        end)
+        if not succ or WaveCount == '999' then
+            succ, _ = pcall(function()
+                WaveCount = PlayerGui:WaitForChild('Waves'):WaitForChild('HealthBar'):WaitForChild('WaveNumber').Text
+            end)
+        end
+        if not succ then
+            WaveCount = 'Unable to Obtain Data!'
+        end
     end
 
-    local TimeCount do
-        local succ,_ = pcall(function() TimeCount = select(1, Holder:WaitForChild('Middle'):WaitForChild('Timer').Text:gsub('Total Time: ', '')) end)
-        if not succ then TimeCount = 'Unable to Obtain Data!' end
+    local TimeCount
+    do
+        local succ, _ = pcall(function()
+            TimeCount = select(1, Holder:WaitForChild('Middle'):WaitForChild('Timer').Text:gsub('Total Time: ', ''))
+        end)
+        if not succ then
+            TimeCount = 'Unable to Obtain Data!'
+        end
     end
 
     local info = {
         XP = tostring(Holder:WaitForChild('GoldGemXP'):WaitForChild('XPReward').Main.Amount.Text),
         Gems = tostring(Holder:WaitForChild('GoldGemXP'):WaitForChild('GemReward').Main.Amount.Text),
         Waves = tostring(WaveCount),
-        Time = tostring(TimeCount),
+        Time = tostring(TimeCount)
     }
 
     local data = {
-        content = '<@' .. (getgenv().webhookMention and getgenv().webhookMentionID and tostring(getgenv().webhookMentionID)) .. '>',
+        content = '<@' ..
+            (getgenv().webhookMention and getgenv().webhookMentionID and tostring(getgenv().webhookMentionID)) .. '>',
         username = 'Anime Adventures',
         avatar_url = 'https://tr.rbxcdn.com/e5b5844fb26df605986b94d87384f5fb/150/150/Image/Jpeg',
-        embeds = {
-            {
-                author = {
-                    name = 'Anime Adventures | ' .. passOrFail,
-                    icon_url = 'https://cdn.discordapp.com/emojis/997123585476927558.webp?size=96&quality=lossless'
-                },
-                description = Client.LocalPlayer.Name,
-                color = color,
-                thumbnail = {
-                    url = 'https://www.roblox.com/headshot-thumbnail/image?userId=' .. Client.LocalPlayer.UserId .. '&width=420&height=420&format=png'
-                },
+        embeds = {{
+            author = {
+                name = 'Anime Adventures | ' .. passOrFail,
+                icon_url = 'https://cdn.discordapp.com/emojis/997123585476927558.webp?size=96&quality=lossless'
+            },
+            description = Client.LocalPlayer.Name,
+            color = color,
+            thumbnail = {
+                url = 'https://www.roblox.com/headshot-thumbnail/image?userId=' .. Client.LocalPlayer.UserId ..
+                    '&width=420&height=420&format=png'
+            },
 
-                fields = {
-                    {name = 'Waves: ', value = info.Waves},
-                    {name = 'Gems Got: ', value = info.Gems},
-                    {name = 'XP Got: ', value = info.XP},
-                    {name = 'Time: ', value = info.Time},
-                    {name = 'Current Gems: ', value = tostring(Stats.gem_amount.Value)},
-                    {name = 'Current Level: ', value = tostring(PlayerGui.spawn_units.Lives.Main.Desc.Level.Text)},
-                }
-            }
-        }
+            fields = {{
+                name = 'Waves: ',
+                value = info.Waves
+            }, {
+                name = 'Gems Got: ',
+                value = info.Gems
+            }, {
+                name = 'XP Got: ',
+                value = info.XP
+            }, {
+                name = 'Time: ',
+                value = info.Time
+            }, {
+                name = 'Current Gems: ',
+                value = tostring(Stats.gem_amount.Value)
+            }, {
+                name = 'Current Level: ',
+                value = tostring(PlayerGui.spawn_units.Lives.Main.Desc.Level.Text)
+            }}
+        }}
     }
 
-	pcall(function()
+    pcall(function()
         request = http_request or request or HttpPost or syn.request or http.request
         request({
             Url = getgenv().webhookUrl,
@@ -260,10 +266,10 @@ local Post = function()
                 ['content-type'] = 'application/json'
             }
         })
-	end)
+    end)
 end
 
---// Making UI
+-- // Making UI
 local DiscordLib = loadstring(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/DiscordUI.lua')()
 local win = DiscordLib:Window('Exploit v0.0.3' .. ' - ' .. tostring(identifyexecutor()))
 
@@ -271,7 +277,12 @@ local Server = win:Server('Anime Adventures', 'http://www.roblox.com/asset/?id=6
 local Misc_Channel = Server:Channel('Misc')
 local Units_Channel = Server:Channel('Units')
 local Farming_Channel = Server:Channel('Farming')
-local Position_Channel do if game.PlaceId ~= 8304191830 then Position_Channel = Server:Channel('Position') end end
+local Position_Channel
+do
+    if game.PlaceId ~= 8304191830 then
+        Position_Channel = Server:Channel('Position')
+    end
+end
 local Priority_Channel = Server:Channel('Priority')
 local Webhook_Channel = Server:Channel('Webhook')
 
@@ -280,14 +291,10 @@ local Placing_Channel = PriorityServer:Channel('Placing')
 local Upgrading_Channel = PriorityServer:Channel('Upgrading')
 
 local ErrorNotif = function(need)
-    DiscordLib:Notification(
-        'Warning',
-        'Please input a ' .. need .. '!',
-        'Okay'
-    )
+    DiscordLib:Notification('Warning', 'Please input a ' .. need .. '!', 'Okay')
 end
 
---// Tabs [[MISC]]
+-- // Tabs [[MISC]]
 Misc_Channel:Toggle('Hide Name', getgenv().hideName, function(bool)
     getgenv().hideName = bool
     saveSaveFile()
@@ -297,24 +304,25 @@ Misc_Channel:Toggle('Anti Afk', getgenv().antiAfk, function(bool)
     saveSaveFile()
 end)
 
---// Tabs [[UNITS]]
+-- // Tabs [[UNITS]]
 Units_Channel:Label('Equip units to allow Farming to Work!')
 Units_Channel:Seperator()
 local Units = {}
 
 local loadUnit = function()
     local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
-    repeat task.wait() until
-        PlayerGui:FindFirstChild('collection')
-        and PlayerGui.collection:FindFirstChild('grid')
-        and PlayerGui.collection.grid:FindFirstChild('List')
-        and PlayerGui.collection.grid.List:FindFirstChild('Outer')
-        and PlayerGui.collection.grid.List.Outer:FindFirstChild('UnitFrames')
+    repeat
+        task.wait()
+    until PlayerGui:FindFirstChild('collection') and PlayerGui.collection:FindFirstChild('grid') and
+        PlayerGui.collection.grid:FindFirstChild('List') and PlayerGui.collection.grid.List:FindFirstChild('Outer') and
+        PlayerGui.collection.grid.List.Outer:FindFirstChild('UnitFrames')
 
     task.wait(2)
     table.clear(Units)
     pcall(function()
-        for _, v in next, PlayerGui:WaitForChild('collection'):WaitForChild('grid'):WaitForChild('List'):WaitForChild('Outer'):WaitForChild('UnitFrames'):GetChildren() do
+        for _, v in next,
+            PlayerGui:WaitForChild('collection'):WaitForChild('grid'):WaitForChild('List'):WaitForChild('Outer')
+                :WaitForChild('UnitFrames'):GetChildren() do
             if (v.Name == "CollectionUnitFrame") and v['name'] and v:FindFirstChild('_uuid') then
                 table.insert(Units, v.name.Text .. " #" .. v._uuid.Value)
             end
@@ -356,7 +364,8 @@ local drop4 = Units_Channel:Dropdown("Unit 4", Units, getgenv().SelectedUnits["U
     Equip()
 end)
 
-local axx = Client.LocalPlayer:WaitForChild('PlayerGui'):WaitForChild('spawn_units').Lives.Main.Desc.Level.Text:split(" ")
+local axx = Client.LocalPlayer:WaitForChild('PlayerGui'):WaitForChild('spawn_units').Lives.Main.Desc.Level.Text:split(
+    " ")
 _G.drop5 = nil
 _G.drop6 = nil
 if tonumber(axx[2]) >= 20 then
@@ -410,9 +419,13 @@ Units_Channel:Button("Unequip All Units", function()
     }
 end)
 
---// Tabs [[FARMING]]
+-- // Tabs [[FARMING]]
 Farming_Channel:Toggle('Auto Start', getgenv().autoStart, function(bool)
     getgenv().autoStart = bool
+    saveSaveFile()
+end)
+Farming_Channel:Toggle('Auto Farm (Enables the following features)', getgenv().autoFarm, function(bool)
+    getgenv().autoFarm = bool
     saveSaveFile()
 end)
 Farming_Channel:Seperator()
@@ -441,46 +454,65 @@ Farming_Channel:Textbox("Select Wave Number for Auto Sell {Press Enter}", getgen
         ErrorNotif('Integer')
     end
 end)
-Farming_Channel:Dropdown("Select World", {"Plannet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village", "Marine's Ford", "Ghoul City"}, getgenv().world, function(world)
+Farming_Channel:Dropdown("Select World", {"Plannet Namak", "Shiganshinu District", "Snowy Town", "Hidden Sand Village",
+                                          "Marine's Ford", "Ghoul City"}, getgenv().world, function(world)
     getgenv().world = world
     saveSaveFile()
 
     if world == "Plannet Namak" then
         getgenv().leveldrop:Clear()
         table.clear(levels)
-        getgenv().levels = {"namek_infinite", "namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4", "namek_level_5", "namek_level_6"}
-        for _, v in ipairs(levels) do getgenv().leveldrop:Add(v) end
+        getgenv().levels = {"namek_infinite", "namek_level_1", "namek_level_2", "namek_level_3", "namek_level_4",
+                            "namek_level_5", "namek_level_6"}
+        for _, v in ipairs(levels) do
+            getgenv().leveldrop:Add(v)
+        end
 
     elseif world == "Shiganshinu District" then
         getgenv().leveldrop:Clear()
         table.clear(levels)
-        getgenv().levels = {"aot_infinite", "aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4", "aot_level_5", "aot_level_6"}
-        for _, v in ipairs(levels) do  getgenv().leveldrop:Add(v) end
+        getgenv().levels = {"aot_infinite", "aot_level_1", "aot_level_2", "aot_level_3", "aot_level_4", "aot_level_5",
+                            "aot_level_6"}
+        for _, v in ipairs(levels) do
+            getgenv().leveldrop:Add(v)
+        end
 
     elseif world == "Snowy Town" then
         getgenv().leveldrop:Clear()
         table.clear(levels)
-        getgenv().levels = {"demonslayer_infinite", "demonslayer_level_1", "demonslayer_level_2", "demonslayer_level_3", "demonslayer_level_4", "demonslayer_level_5", "demonslayer_level_6"}
-        for _, v in ipairs(levels) do getgenv().leveldrop:Add(v) end
+        getgenv().levels = {"demonslayer_infinite", "demonslayer_level_1", "demonslayer_level_2", "demonslayer_level_3",
+                            "demonslayer_level_4", "demonslayer_level_5", "demonslayer_level_6"}
+        for _, v in ipairs(levels) do
+            getgenv().leveldrop:Add(v)
+        end
 
     elseif world == "Hidden Sand Village" then
         getgenv().leveldrop:Clear()
         table.clear(levels)
-        getgenv().levels = {"naruto_infinite", "naruto_level_1", "naruto_level_2", "naruto_level_3", "naruto_level_4", "naruto_level_5", "naruto_level_6"}
-        for _, v in ipairs(levels) do getgenv().leveldrop:Add(v) end
+        getgenv().levels = {"naruto_infinite", "naruto_level_1", "naruto_level_2", "naruto_level_3", "naruto_level_4",
+                            "naruto_level_5", "naruto_level_6"}
+        for _, v in ipairs(levels) do
+            getgenv().leveldrop:Add(v)
+        end
 
     elseif world == "Marine's Ford" then
         getgenv().leveldrop:Clear()
         table.clear(levels)
-        getgenv().levels = {"marineford_infinite", "marineford_level_1", "marineford_level_2", "marineford_level_3", "marineford_level_4", "marineford_level_5", "marineford_level_6"}
-        for _, v in ipairs(levels) do getgenv().leveldrop:Add(v) end
-    
-	elseif world == "Ghoul City" then
-		getgenv().leveldrop:Clear()
-		table.clear(levels)
-		getgenv().levels = {"tokyoghoul_infinite", "tokyoghoul_level_1", "tokyoghoul_level_2", "tokyoghoul_level_3", "tokyoghoul_level_4", "tokyoghoul_level_5", "tokyoghoul_level_6"}
-		for _, v in ipairs(levels) do getgenv().leveldrop:Add(v) end
-	end
+        getgenv().levels = {"marineford_infinite", "marineford_level_1", "marineford_level_2", "marineford_level_3",
+                            "marineford_level_4", "marineford_level_5", "marineford_level_6"}
+        for _, v in ipairs(levels) do
+            getgenv().leveldrop:Add(v)
+        end
+
+    elseif world == "Ghoul City" then
+        getgenv().leveldrop:Clear()
+        table.clear(levels)
+        getgenv().levels = {"tokyoghoul_infinite", "tokyoghoul_level_1", "tokyoghoul_level_2", "tokyoghoul_level_3",
+                            "tokyoghoul_level_4", "tokyoghoul_level_5", "tokyoghoul_level_6"}
+        for _, v in ipairs(levels) do
+            getgenv().leveldrop:Add(v)
+        end
+    end
 end)
 getgenv().leveldrop = Farming_Channel:Dropdown("Select Level", getgenv().levels, getgenv().level, function(level)
     getgenv().level = level
@@ -491,7 +523,7 @@ getgenv().diff = Farming_Channel:Dropdown("Select Difficulty", {"Normal", "Hard"
     saveSaveFile()
 end)
 
---// Tabs [[Priority]]
+-- // Tabs [[Priority]]
 Priority_Channel:Label('Manage the order in the next tab!')
 Priority_Channel:Seperator()
 Priority_Channel:Toggle('Placing', getgenv().placePriorityEnabled, function(bool)
@@ -561,8 +593,8 @@ if tonumber(axx[2]) >= 50 then
 end
 Placing_Channel:Seperator()
 Placing_Channel:Button('Reset Priority', function()
-    for t = 1,6 do
-        getgenv().placePriority['U'..t] = '0'
+    for t = 1, 6 do
+        getgenv().placePriority['U' .. t] = '0'
     end
     saveSaveFile()
 end)
@@ -625,19 +657,20 @@ if tonumber(axx[2]) >= 50 then
 end
 Upgrading_Channel:Seperator()
 Upgrading_Channel:Button('Reset Priority', function()
-    for t = 1,6 do
-        getgenv().upgradePriority['U'..t] = '0'
+    for t = 1, 6 do
+        getgenv().upgradePriority['U' .. t] = '0'
     end
     saveSaveFile()
 end)
 
---// Tabs [[WEBHOOK]]
+-- // Tabs [[WEBHOOK]]
 Webhook_Channel:Toggle('Webhook', getgenv().webhook, function(bool)
     getgenv().webhook = bool
     saveSaveFile()
 end)
 do
-    local PlaceHolder = (((getgenv().webhookUrl == "") or (not getgenv().webhookUrl)) and 'Insert Url Here!') or getgenv().webhookUrl
+    local PlaceHolder = (((getgenv().webhookUrl == "") or (not getgenv().webhookUrl)) and 'Insert Url Here!') or
+                            getgenv().webhookUrl
     Webhook_Channel:Textbox("Webhook URL {Press Enter}", PlaceHolder, false, function(url)
         getgenv().webhookUrl = url
         saveSaveFile()
@@ -650,7 +683,8 @@ Webhook_Channel:Toggle('Mention', getgenv().webhookMention, function(bool)
     saveSaveFile()
 end)
 do
-    local PlaceHolder = (((getgenv().webhookMentionID == "") or (not getgenv().webhookMentionID)) and 'Insert ID to mention Here!') or getgenv().webhookMentionID
+    local PlaceHolder = (((getgenv().webhookMentionID == "") or (not getgenv().webhookMentionID)) and
+                            'Insert ID to mention Here!') or getgenv().webhookMentionID
     Webhook_Channel:Textbox("ID {Press Enter}", PlaceHolder, false, function(url)
         getgenv().webhookMentionID = url
         saveSaveFile()
@@ -664,7 +698,7 @@ Webhook_Channel:Button('Test Webhook', function()
     print(success, err)
 end)
 
---// PLACE SPECIFIC
+-- // PLACE SPECIFIC
 if game.PlaceId == 8304191830 then
     Misc_Channel:Seperator()
     Misc_Channel:Button('Redeem Codes', function()
@@ -674,19 +708,18 @@ if game.PlaceId == 8304191830 then
     end)
 
     local summon = function()
-        if not getgenv().autoSummonGEM and not getgenv().autoSummonTICKET then return end
+        if not getgenv().autoSummonGEM and not getgenv().autoSummonTICKET then
+            return
+        end
         local PlayerGui = Client.LocalPlayer:WaitForChild('PlayerGui')
         local GemNumber = Client.LocalPlayer:WaitForChild('_stats'):WaitForChild('gem_amount')
 
         while getgenv().autoSummonGEM do
-            local gems10 = math.floor(GemNumber.Value/500)
-            local gems = GemNumber.Value - (gems10*500)
+            local gems10 = math.floor(GemNumber.Value / 500)
+            local gems = GemNumber.Value - (gems10 * 500)
 
             if (gems10 > 0) or (gems >= 50) then
-                Endpoints.buy_random_fighter:InvokeServer(
-                    'dbz_fighter',
-                    (gems10>0 and 'gems10') or 'gems'
-                )
+                Endpoints.buy_random_fighter:InvokeServer('dbz_fighter', (gems10 > 0 and 'gems10') or 'gems')
                 task.wait()
             else
                 break
@@ -695,15 +728,16 @@ if game.PlaceId == 8304191830 then
 
         while getgenv().autoSummonTICKET do
             local TicketNumber = 0
-            for _, v in next, PlayerGui:WaitForChild('items'):WaitForChild('grid'):WaitForChild('List'):WaitForChild('Outer'):WaitForChild('ItemFrames'):GetChildren() do
-                if v.Name == 'summon_ticket' then TicketNumber = TicketNumber + 1 end
+            for _, v in next,
+                PlayerGui:WaitForChild('items'):WaitForChild('grid'):WaitForChild('List'):WaitForChild('Outer')
+                    :WaitForChild('ItemFrames'):GetChildren() do
+                if v.Name == 'summon_ticket' then
+                    TicketNumber = TicketNumber + 1
+                end
             end
 
             if TicketNumber > 0 then
-                Endpoints.buy_random_fighter:InvokeServer(
-                    'dbz_fighter',
-                    'ticket'
-                )
+                Endpoints.buy_random_fighter:InvokeServer('dbz_fighter', 'ticket')
                 task.wait()
             else
                 break
@@ -724,9 +758,13 @@ if game.PlaceId == 8304191830 then
 
     task.spawn(summon)
 else
-    repeat task.wait() until Client.LocalPlayer.Character
+    repeat
+        task.wait()
+    until Client.LocalPlayer.Character
     Endpoints.vote_start:InvokeServer()
-    repeat task.wait() until workspace["_waves_started"] and (workspace["_waves_started"].Value == true)
+    repeat
+        task.wait()
+    until workspace["_waves_started"] and (workspace["_waves_started"].Value == true)
 
     Client.LocalPlayer.PlayerGui.MessageGui.Enabled = false
     Client.ReplicatedStorage.packages.assets["ui_sfx"].error.Volume = 0
@@ -734,63 +772,52 @@ else
 
     function MouseClick(UnitPos)
         local connection
-        connection = Client.UserInputService.InputBegan:Connect(function(input, gameProcessed)
-            if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                connection:Disconnect()
-                local a = Instance.new("Part", game.Workspace)
-                a.Size = Vector3.new(1, 1, 1)
-                a.Material = Enum.Material.Neon
-                a.Position = Client.Mouse.hit.p
-                task.wait()
-                a.Anchored = true
-                DiscordLib:Notification("Spawn Unit Posotion:", tostring(a.Position), "Okay!")
-                a.CanCollide = false
-                for i = 0, 1, 0.1 do
-                    a.Transparency = i
+        connection = Client.UserInputService.InputBegan:Connect(
+            function(input, gameProcessed)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    connection:Disconnect()
+                    local a = Instance.new("Part", game.Workspace)
+                    a.Size = Vector3.new(1, 1, 1)
+                    a.Material = Enum.Material.Neon
+                    a.Position = Client.Mouse.hit.p
                     task.wait()
+                    a.Anchored = true
+                    DiscordLib:Notification("Spawn Unit Posotion:", tostring(a.Position), "Okay!")
+                    a.CanCollide = false
+                    for i = 0, 1, 0.1 do
+                        a.Transparency = i
+                        task.wait()
+                    end
+                    a:Destroy()
+                    SpawnUnitPos[UnitPos]["x"] = a.Position.X
+                    SpawnUnitPos[UnitPos]["y"] = a.Position.Y
+                    SpawnUnitPos[UnitPos]["z"] = a.Position.Z
+                    saveSaveFile()
                 end
-                a:Destroy()
-                SpawnUnitPos[UnitPos]["x"] = a.Position.X
-                SpawnUnitPos[UnitPos]["y"] = a.Position.Y
-                SpawnUnitPos[UnitPos]["z"] = a.Position.Z
-                saveSaveFile()
-            end
-        end)
+            end)
     end
 
     Position_Channel:Label('Set Unit Spawn Positions')
     Position_Channel:Seperator()
     Position_Channel:Button("Set Unit 1 Postion", function()
-        DiscordLib:Notification(
-            "Set Unit 1 Spawn Position",
-            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
-            "Done"
-        )
+        DiscordLib:Notification("Set Unit 1 Spawn Position",
+            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)", "Done")
         MouseClick("UP1")
     end)
 
     Position_Channel:Button("Set Unit 2 Postion", function()
-        DiscordLib:Notification(
-            "Set Unit 2 Spawn Position",
-            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
-            "Done"
-        )
+        DiscordLib:Notification("Set Unit 2 Spawn Position",
+            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)", "Done")
         MouseClick("UP2")
     end)
     Position_Channel:Button("Set Unit 3 Postion", function()
-        DiscordLib:Notification(
-            "Set Unit 3 Spawn Position",
-            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
-            "Done"
-        )
+        DiscordLib:Notification("Set Unit 3 Spawn Position",
+            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)", "Done")
         MouseClick("UP3")
     end)
     Position_Channel:Button("Set Unit 4 Postion", function()
-        DiscordLib:Notification(
-            "Set Unit 4 Spawn Position",
-            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
-            "Done"
-        )
+        DiscordLib:Notification("Set Unit 4 Spawn Position",
+            "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)", "Done")
         MouseClick("UP4")
     end)
 
@@ -798,28 +825,24 @@ else
 
     if tonumber(axxc[2]) >= 20 then
         Position_Channel:Button("Set Unit 5 Postion", function()
-            DiscordLib:Notification(
-                "Set Unit 5 Spawn Position",
+            DiscordLib:Notification("Set Unit 5 Spawn Position",
                 "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
-                "Done"
-            )
+                "Done")
             MouseClick("UP5")
         end)
     end
 
     if tonumber(axxc[2]) >= 50 then
         Position_Channel:Button("Set Unit 6 Postion", function()
-            DiscordLib:Notification(
-                "Set Unit 6 Spawn Position",
+            DiscordLib:Notification("Set Unit 6 Spawn Position",
                 "Click on the floor to set the spawn unit position!\n (don't press \"Done\" until you set position)",
-                "Done"
-            )
+                "Done")
             MouseClick("UP6")
         end)
     end
 end
 
---// Tabs [[DEBUG]]
+-- // Tabs [[DEBUG]]
 local DebugServer = win:Server('Debug', 'http://www.roblox.com/asset/?id=10425947463')
 local Debug_Channel = DebugServer:Channel('Reset')
 Debug_Channel:Button('Re-Align Exploit Ui', function()
@@ -828,58 +851,63 @@ end)
 Debug_Channel:Seperator()
 Debug_Channel:Label('---- DANGER ----\n(WARNING! This will affect current settings!)')
 Debug_Channel:Button('Reset Exploit Data', function()
-    for i,v in next, GenvVariables do
+    for i, v in next, GenvVariables do
         getgenv()[i] = v
     end
     saveSaveFile()
-    DiscordLib:Notification(
-        'NOTICE',
-        'Reset All Saved Exploit Data!',
-        'Okay'
-    )
+    DiscordLib:Notification('NOTICE', 'Reset All Saved Exploit Data!', 'Okay')
 end)
 
---// Auto Sell and Abilities and Upgrade
+-- // Auto Sell and Abilities and Upgrade
 task.spawn(function()
-    if game.PlaceId == 8304191830 then return end
+    if game.PlaceId == 8304191830 then
+        return
+    end
 
     local _UNITS = workspace:WaitForChild('_UNITS')
     local _wave = workspace:WaitForChild('_wave_num')
     local GameFinished = workspace:WaitForChild("_DATA"):WaitForChild("GameFinished")
 
     local pastWave = function()
-        return tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value)
+        return tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and
+                   (tonumber(getgenv().sellAtWave) <= _wave.Value)
     end
     local getCurrentUnits = function()
         local curr = {}
         for _, v in next, _UNITS:GetChildren() do
-            if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
+            if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and
+                not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
                 table.insert(curr, v)
             end
         end
         return curr
     end
 
-
     GameFinished:GetPropertyChangedSignal("Value"):Connect(function()
         if GameFinished.Value == true then
-            repeat task.wait() until game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Enabled == true
+            repeat
+                task.wait()
+            until game:GetService("Players").LocalPlayer.PlayerGui.ResultsUI.Enabled == true
             task.wait()
-            local succ, err = pcall(function() Post() end) print(succ, err)
+            local succ, err = pcall(function()
+                Post()
+            end)
+            print(succ, err)
             task.wait(2)
             Client.TeleportService:Teleport(8304191830, Client.LocalPlayer)
         end
     end)
 
-    task.spawn(function() --// Ability
+    task.spawn(function() -- // Ability
         while task.wait() do
             if getgenv().autoAbility and not pastWave() then
                 for _, v in next, getCurrentUnits() do
                     pcall(function()
                         local upgrades = v._stats.upgrade.Value
                         local lastCast = v._stats.last_active_cast.Value
-									
-                        if (upgrades >= 3) and (v.Name:lower() == 'erwin') and ((tick() - getgenv().lastErwin) >= 21) and (tick() - lastCast) >= 44 then
+
+                        if (upgrades >= 3) and (v.Name:lower() == 'erwin') and ((tick() - getgenv().lastErwin) >= 21) and
+                            (tick() - lastCast) >= 44 then
                             getgenv().lastErwin = tick()
                             Endpoints.use_active_attack:InvokeServer(v)
                         elseif v.Name:lower() ~= 'erwin' then
@@ -898,11 +926,12 @@ task.spawn(function()
 
             for _, v in next, currentUnits do
                 pcall(function()
-                    for t = 1,6 do
-                        local unitinfo = getgenv().SelectedUnits['U'..t]
+                    for t = 1, 6 do
+                        local unitinfo = getgenv().SelectedUnits['U' .. t]
                         if unitinfo ~= nil then
                             local unitinfo_ = unitinfo:split(" #")
-                            if unitinfo_[1]:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v.Name)]) then
+                            if unitinfo_[1]:lower():find(unitConversion.CollectableName[table.find(
+                                unitConversion.InGameUnitName, v.Name)]) then
                                 table.insert(toUpgrade, {
                                     Priority = (getgenv().upgradePriorityEnabled and tonumber(getgenv().upgradePriority[t])) or 0,
                                     Object = v
@@ -920,17 +949,13 @@ task.spawn(function()
                 })
             end
 
-            table.sort(toUpgrade, function(a, b)
-                return tonumber(a.Priority) > tonumber(b.Priority)
-            end)
-            table.sort(toPlace, function(a,b)
-                return tonumber(a.Priority) > tonumber(b.Priority)
-            end)
+            table.sort(toUpgrade, function(a, b) return tonumber(a.Priority) > tonumber(b.Priority) end)
+            table.sort(toPlace, function(a, b) return tonumber(a.Priority) > tonumber(b.Priority) end)
         end
 
         if getgenv().autoFarm then
             if pastWave() then
-                if getgenv().autoSell then --// Auto Sell
+                if getgenv().autoSell then -- // Auto Sell
                     for _, v in next, currentUnits do
                         Endpoints.sell_unit_ingame:InvokeServer(v)
                     end
@@ -940,21 +965,26 @@ task.spawn(function()
                     local maxUnits = 10
                     local succ, err = pcall(function()
                         for _, v in next, toUpgrade do
-                            if v.Object['_stats'] and v.Object['_stats'].upgrade and ((v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits)) then
+                            if v.Object['_stats'] and v.Object['_stats'].upgrade and
+                                ((v.Object['_stats'].upgrade.Value == 0) or
+                                    (v.Object['_stats'].upgrade.Value <= maxUnits)) then
                                 local start = tick()
-                                repeat Endpoints.upgrade_unit_ingame:InvokeServer(v.Object); task.wait(0.01) until (tick() - start) >= v.Priority
+                                repeat
+                                    Endpoints.upgrade_unit_ingame:InvokeServer(v.Object);
+                                    task.wait(0.01)
+                                until (tick() - start) >= v.Priority
                             end
                         end
                     end)
-                    if not succ then warn(err) end
+                    if not succ then
+                        warn(err)
+                    end
                 end
 
-                do
-                    local x = 4
-                    local y = 3
-                    local z = 4
-    
-                    for _, v in next, toPlace do
+                if getgenv().autoPlace then
+                    local x, y, z = 4, 3, 4
+
+                    for _,v in next, toPlace do
                         local unitinfo = getgenv().SelectedUnits[v.Unit]
                         if unitinfo ~= nil then
                             local start = tick()
@@ -963,7 +993,8 @@ task.spawn(function()
                             local checkCount = function(num)
                                 local count = 0
                                 for _, v2 in next, getCurrentUnits() do
-                                    if unitinfo_[1]:lower():find(unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
+                                    if unitinfo_[1]:lower():find(
+                                        unitConversion.CollectableName[table.find(unitConversion.InGameUnitName, v2.Name)]) then
                                         count = count + 1
                                     end
                                 end
@@ -971,53 +1002,48 @@ task.spawn(function()
                             end
 
                             repeat
-                            -- place units 0
-                                Endpoints.spawn_unit:InvokeServer(
-                                    unitinfo_[2],
-                                    CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                -- place units 0
+                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                    Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
                                 )
-    
+
                                 -- place units 1
-                                Endpoints.spawn_unit:InvokeServer(
-                                    unitinfo_[2],
-                                    CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                    Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
                                 )
-    
+
                                 -- place units 2 
-                                Endpoints.spawn_unit:InvokeServer(
-                                    unitinfo_[2],
-                                    CFrame.new(Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                    Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
                                 )
-    
+
                                 -- place units 3 
-                                Endpoints.spawn_unit:InvokeServer(
-                                    unitinfo_[2],
-                                    CFrame.new(Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                    Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
                                 )
-    
+
                                 -- place units 4
-                                Endpoints.spawn_unit:InvokeServer(
-                                    unitinfo_[2],
-                                    CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                    Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
                                 )
-    
+
                                 -- place units 5
-                                Endpoints.spawn_unit:InvokeServer(
-                                    unitinfo_[2],
-                                    CFrame.new(Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                    Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
                                 )
                                 task.wait()
                             until checkCount(1) or ((tick() - start) >= v.Priority)
                         end
                     end
                 end
+
             end
         end
     end
 
 end)
 
---// Auto Start and Sell Unit
+-- // Auto Start and Sell Unit
 task.spawn(function()
     while task.wait() and (game.PlaceId == 8304191830) do
         if getgenv().autoStart and getgenv().autoFarm then
@@ -1033,7 +1059,7 @@ task.spawn(function()
                 end
             end
 
-            table.sort(avaliableDoors, function(a,b)
+            table.sort(avaliableDoors, function(a, b)
                 return a.distance > b.distance
             end)
             getgenv().door = avaliableDoors[1].name
@@ -1042,16 +1068,11 @@ task.spawn(function()
                 task.wait(0.1)
                 Endpoints.request_join_lobby:InvokeServer(getgenv().door)
                 task.wait(0.1)
-        
-                Endpoints.request_lock_level:InvokeServer(
-                    getgenv().door,
-                    getgenv().level,
-                    true,
-                    getgenv().difficulty
-                )
-        
+
+                Endpoints.request_lock_level:InvokeServer(getgenv().door, getgenv().level, true, getgenv().difficulty)
+
                 task.wait(3)
-        
+
                 Endpoints.request_start_game:InvokeServer(getgenv().door)
             end
             task.wait(5)
@@ -1061,14 +1082,15 @@ end)
 
 Client.LocalPlayer.Idled:Connect(function()
     if getgenv().antiAfk then
-        Client.VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        Client.VirtualUser:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
         task.wait(1)
-        Client.VirtualUser:Button2Up(Vector2.new(0,0), workspace.CurrentCamera.CFrame)
+        Client.VirtualUser:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
     end
 end)
 
 Client.RunService.Stepped:Connect(function()
-    if getgenv().hideName and Client.LocalPlayer.Character and Client.LocalPlayer.Character.Head:FindFirstChild('_overhead') then
+    if getgenv().hideName and Client.LocalPlayer.Character and
+        Client.LocalPlayer.Character.Head:FindFirstChild('_overhead') then
         workspace[Client.LocalPlayer.Name].Head._overhead:Destroy()
     end
 end)
