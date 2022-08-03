@@ -882,19 +882,11 @@ task.spawn(function()
     local getCurrentUnits = function()
         local curr = {}
         for _, v in next, _UNITS:GetChildren() do
-            if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and
-                not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
+            if v:FindFirstChild('_stats') and (v._stats.player.Value == Client.LocalPlayer) and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
                 table.insert(curr, v)
             end
         end
         return curr
-    end
-    local searchForUnitCollectableName = function(vName)
-        for i, v in next, unitConversion.InGameUnitName do
-            if v == vName then
-                return i
-            end
-        end
     end
 
     GameFinished:GetPropertyChangedSignal("Value"):Connect(function()
