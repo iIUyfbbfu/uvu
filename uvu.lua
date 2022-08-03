@@ -938,6 +938,7 @@ task.spawn(function()
                         local unitinfo = getgenv().SelectedUnits['U' .. t]
                         if unitinfo ~= nil then
                             local unitinfo_ = unitinfo:split(" #")
+                            print(unitinfo_[1], searchForUnitCollectableName(v.Name), unitConversion.CollectableName[searchForUnitCollectableName(v.Name)])
                             if unitinfo_[1]:lower():find(unitConversion.CollectableName[searchForUnitCollectableName(v.Name)]) then
                                 table.insert(toUpgrade, {
                                     Priority = (getgenv().upgradePriorityEnabled and tonumber(getgenv().upgradePriority[t])) or 0,
