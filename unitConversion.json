@@ -1,31 +1,40 @@
 {
-  "Collectable Name" : "In-Game Unit Name",
+  "__IGNORE": {"Collectable Name" : "In-Game Unit Name"},
   
-  "brulo" : "broly",
-  "legendary brulo" : "broly",
   
-  "orwin" : "erwin",
+  "__IGNORE": {"MYTHICS": true},
+  "_": {"CollectableName": "brulo", "UnitName": "broly"},
+  "_": {"CollectableName": "legendary brulo", "UnitName": "broly"},
   
-  "blackhair" : "blackbeard",
+  "_": {"CollectableName": "whitehair", "UnitName": "whitebeard"},
+  "_": {"CollectableName": "emperor whitehair", "UnitName": "whitebeard"},
   
-  "emperor whitehair" : "whitebeard",
+  "_": {"CollectableName": "akano", "UnitName": "akainu"},
+  "_": {"CollectableName": "fleet admiral akano", "UnitName": "akainu"},
   
-  "fleet admiral akano" : "akainu",
+  "_": {"CollectableName": "red scar", "UnitName": "shanks"},
+  "_": {"CollectableName": "red scar (conqueror)", "UnitName": "shanks"},
   
-  "red scar (conqueror)" : "shanks",
-  "red scar" : "shanks",
+  "_": {"CollectableName": "levy", "UnitName": "levi"},
+  "_": {"CollectableName": "levy ackman", "UnitName": "levi"},
   
-  "levy" : "levi",
-  "levy ackman" : "levi",
+  "_": {"CollectableName": "mochi", "UnitName": "katakuri"},
   
-  "goku blue" : "goku_ssb",
+  "_": {"CollectableName": "ariva", "UnitName": "arima"},
   
-  "erein" : "attack_titan_smaller",
   
-  "mochi" : "katakuri",
+  "__IGNORE": {"LEGENDS": true},
+  "_": {"CollectableName": "orwin", "UnitName": "erwin"},
   
-  "ariva" : "arima",
+  "_": {"CollectableName": "blackhair", "UnitName": "blackbeard"},
   
-  "bulmy" : "bulma",
-  "speedcart" : "speedwagon"
+  "_": {"CollectableName": "goku blue", "UnitName": "goku_ssb"},
+  
+  "_": {"CollectableName": "erein", "UnitName": "attack_titan_smaller"},
+  
+  "_": {"CollectableName": "blumy", "UnitName": "bulma"},
+  
+  
+  "__IGNORE": {"EPICS": true},
+  "_": {"CollectableName": "speedcart", "UnitName": "speedwagon"},
 }
