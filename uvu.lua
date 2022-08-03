@@ -117,19 +117,27 @@ local unitConversion do
     for i,_ in next, __unitConversion do if i == '__IGNORE' then __unitConversion[i] = nil end end
     
     unitConversion = {
-        searchForCollectable = function(inGameUnitName)
+        searchForCollectable = function(inGameUnitName, searchIn)
+            local names = {}
             for _, v in next, __unitConversion do
                 if v.UnitName:lower() == inGameUnitName:lower() then
-                    return v.CollectableName
+                    table.insert(names, v.CollectableName)
                 end
             end
+            
+            for _, v in next, names do if (searchIn or ''):lower():find(v:lower()) then return true end end
+            return names
         end,
-        searchForUnit = function(CollectableName)
+        searchForUnit = function(CollectableName, searchIn)
+            local names = {}
             for _, v in next, __unitConversion do
                 if v.CollectableName:lower() == CollectableName:lower() then
-                    return v.UnitName
+                    table.insert(names, v.UnitName)
                 end
             end
+            
+            for _, v in next, names do if (searchIn or ''):lower():find(v:lower()) then return true end end
+            return names
         end,
         raw = __unitConversion,
     }
@@ -937,8 +945,8 @@ task.spawn(function()
                         local unitinfo = getgenv().SelectedUnits['U' .. t]
                         if unitinfo ~= nil then
                             local unitinfo_ = unitinfo:split(" #")
-                            print(unitinfo_[1], unitConversion.searchForCollectable(v.Name))
-                            if unitinfo_[1]:lower():find(unitConversion.searchForCollectable(v.Name)) then
+                            print(unitinfo_[1], unitConversion.searchForCollectable(v.Name, unitinfo_[1]:lower()))
+                            if unitConversion.searchForCollectable(v.Name, unitinfo_[1]:lower()) then
                                 table.insert(toUpgrade, {
                                     Priority = (getgenv().upgradePriorityEnabled and tonumber(getgenv().upgradePriority[t])) or 0,
                                     Object = v
@@ -999,7 +1007,7 @@ task.spawn(function()
                                 local count = 0
                                 for _, v2 in next, getCurrentUnits() do
                                     pcall(function()
-                                        if unitinfo_[1]:lower():find(unitConversion.searchForCollectable(v2.Name)) then
+                                        if unitConversion.searchForCollectable(v2.Name, unitinfo_[1]:lower()) then
                                             count = count + 1
                                         end
                                     end)
