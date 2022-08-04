@@ -125,7 +125,7 @@ local unitConversion do
                 end
             end
             
-            for _, v in next, names do if (searchIn or ''):lower():find('^' .. v:lower()) then return true end end
+            for _, v in next, names do if (searchIn or ''):lower():find('^' .. v:lower() or '') then return true end end
             return names
         end,
         searchForUnit = function(CollectableName, searchIn)
@@ -136,7 +136,7 @@ local unitConversion do
                 end
             end
             
-            for _, v in next, names do if (searchIn or ''):lower():find('^' .. v:lower()) then return true end end
+            for _, v in next, names do if (searchIn or ''):lower():find('^' .. v:lower() or '') then return true end end
             return names
         end,
         raw = __unitConversion,
