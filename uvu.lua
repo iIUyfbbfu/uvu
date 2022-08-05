@@ -114,12 +114,13 @@ local Endpoints = setmetatable({}, {
 })
 
 local unitConversion do
-    for i,_ in next, __unitConversion do if i == '__IGNORE' then __unitConversion[i] = nil end end
+    local cache = {}
+    for _,v in ipairs(__unitConversion) do if v.Type ~= '__IGNORE' then table.insert(cache, v) end end
     
     unitConversion = {
         searchForCollectable = function(inGameUnitName, searchIn)
             local names = {}
-            for _, v in next, __unitConversion do
+            for _, v in next, cache do
                 if v.UnitName:lower() == inGameUnitName:lower() then
                     table.insert(names, v.CollectableName)
                 end
@@ -130,7 +131,7 @@ local unitConversion do
         end,
         searchForUnit = function(CollectableName, searchIn)
             local names = {}
-            for _, v in next, __unitConversion do
+            for _, v in next, cache do
                 if v.CollectableName:lower() == CollectableName:lower() then
                     table.insert(names, v.UnitName)
                 end
