@@ -23,6 +23,8 @@
   {"CollectableName": "ariva", "UnitName": "arima", "Upgrades": "8", "UnitCount": "4"},
   {"CollectableName": "ariva (reaper)", "UnitName": "arima", "Upgrades": "9", "UnitCount": "4"},
   
+  {"CollectableName": "eta", "UnitName": "eto", "Upgrades": "8", "UnitCount": "4"},
+  
   
   {"Type": "__IGNORE", "LEGENDS": "true"},
   {"CollectableName": "orwin", "UnitName": "erwin", "Upgrades": "6", "UnitCount": "3"},
@@ -33,7 +35,7 @@
   
   {"CollectableName": "erein", "UnitName": "attack_titan_smaller"},
   
-  {"CollectableName": "bulmy", "UnitName": "bulma", "Upgrades": "6", "UnitCount": "2"},
+  {"CollectableName": "bulmy", "UnitName": "bulma", "Upgrades": "6", "UnitCount": "1"},
   
   
   {"Type": "__IGNORE", "EPICS": "true"},
