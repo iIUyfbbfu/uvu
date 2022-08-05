@@ -33,7 +33,7 @@
   
   {"CollectableName": "erein", "UnitName": "attack_titan_smaller"},
   
-  {"CollectableName": "blumy", "UnitName": "bulma", "Upgrades": "6", "UnitCount": "1"},
+  {"CollectableName": "blumy", "UnitName": "bulma", "Upgrades": "6", "UnitCount": "2"},
   
   
   {"Type": "__IGNORE", "EPICS": "true"},
