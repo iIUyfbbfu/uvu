@@ -3,8 +3,8 @@
   
   
   "__IGNORE": {"MYTHICS": "true"},
-  "_": {"CollectableName": "brulo", "UnitName": "broly"},
-  "_": {"CollectableName": "legendary brulo", "UnitName": "broly"},
+  "_": {"CollectableName": "brulo","UnitName": "broly", "Upgrades": "8", "UnitCount": "4"},
+  "_": {"CollectableName": "legendary brulo", "UnitName": "broly", "Upgrades": "9", "UnitCount": "4"},
   
   "_": {"CollectableName": "whitehair", "UnitName": "whitebeard"},
   "_": {"CollectableName": "emperor whitehair", "UnitName": "whitebeard"},
@@ -12,20 +12,20 @@
   "_": {"CollectableName": "akano", "UnitName": "akainu"},
   "_": {"CollectableName": "fleet admiral akano", "UnitName": "akainu"},
   
-  "_": {"CollectableName": "red scar", "UnitName": "shanks"},
-  "_": {"CollectableName": "red scar (conqueror)", "UnitName": "shanks"},
+  "_": {"CollectableName": "red scar", "UnitName": "shanks", "Upgrades": "8", "UnitCount": "3"},
+  "_": {"CollectableName": "red scar (conqueror)", "UnitName": "shanks", "Upgrades": "9", "UnitCount": "3"},
   
-  "_": {"CollectableName": "levy", "UnitName": "levi"},
-  "_": {"CollectableName": "levy ackman", "UnitName": "levi"},
+  "_": {"CollectableName": "levy", "UnitName": "levi", "Upgrades": "8", "UnitCount": "6"},
+  "_": {"CollectableName": "levy ackman", "UnitName": "levi", "Upgrades": "9", "UnitCount": "6"},
   
   "_": {"CollectableName": "mochi", "UnitName": "katakuri"},
   
-  "_": {"CollectableName": "ariva", "UnitName": "arima"},
-  "_": {"CollectableName": "ariva (reaper)", "UnitName": "arima"},
+  "_": {"CollectableName": "ariva", "UnitName": "arima", "Upgrades": "8", "UnitCount": "4"},
+  "_": {"CollectableName": "ariva (reaper)", "UnitName": "arima", "Upgrades": "9", "UnitCount": "4"},
   
   
   "__IGNORE": {"LEGENDS": "true"},
-  "_": {"CollectableName": "orwin", "UnitName": "erwin"},
+  "_": {"CollectableName": "orwin", "UnitName": "erwin", "Upgrades": "6", "UnitCount": "3"},
   
   "_": {"CollectableName": "blackhair", "UnitName": "blackbeard"},
   
@@ -33,9 +33,9 @@
   
   "_": {"CollectableName": "erein", "UnitName": "attack_titan_smaller"},
   
-  "_": {"CollectableName": "blumy", "UnitName": "bulma"},
+  "_": {"CollectableName": "blumy", "UnitName": "bulma", "Upgrades": "6", "UnitCount": "1"},
   
   
   "__IGNORE": {"EPICS": "true"},
-  "_": {"CollectableName": "speedcart", "UnitName": "speedwagon"}
+  "_": {"CollectableName": "speedcart", "UnitName": "speedwagon", "Upgrades": "4", "UnitCount": "3"}
 }
