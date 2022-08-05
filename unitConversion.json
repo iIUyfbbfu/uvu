@@ -6,11 +6,11 @@
   "_": {"CollectableName": "brulo","UnitName": "broly", "Upgrades": "8", "UnitCount": "4"},
   "_": {"CollectableName": "legendary brulo", "UnitName": "broly", "Upgrades": "9", "UnitCount": "4"},
   
-  "_": {"CollectableName": "whitehair", "UnitName": "whitebeard"},
-  "_": {"CollectableName": "emperor whitehair", "UnitName": "whitebeard"},
+  "_": {"CollectableName": "whitehair", "UnitName": "whitebeard", "Upgrades": "8", "UnitCount": "3"},
+  "_": {"CollectableName": "emperor whitehair", "UnitName": "whitebeard", "Upgrades": "9", "UnitCount": "3"},
   
-  "_": {"CollectableName": "akano", "UnitName": "akainu"},
-  "_": {"CollectableName": "fleet admiral akano", "UnitName": "akainu"},
+  "_": {"CollectableName": "akano", "UnitName": "akainu", "Upgrades": "8", "UnitCount": "4"},
+  "_": {"CollectableName": "fleet admiral akano", "UnitName": "akainu", "Upgrades": "9", "UnitCount": "4"},
   
   "_": {"CollectableName": "red scar", "UnitName": "shanks", "Upgrades": "8", "UnitCount": "3"},
   "_": {"CollectableName": "red scar (conqueror)", "UnitName": "shanks", "Upgrades": "9", "UnitCount": "3"},
@@ -18,7 +18,7 @@
   "_": {"CollectableName": "levy", "UnitName": "levi", "Upgrades": "8", "UnitCount": "6"},
   "_": {"CollectableName": "levy ackman", "UnitName": "levi", "Upgrades": "9", "UnitCount": "6"},
   
-  "_": {"CollectableName": "mochi", "UnitName": "katakuri"},
+  "_": {"CollectableName": "mochi", "UnitName": "katakuri", "Upgrades": "8", "UnitCount": "4"},
   
   "_": {"CollectableName": "ariva", "UnitName": "arima", "Upgrades": "8", "UnitCount": "4"},
   "_": {"CollectableName": "ariva (reaper)", "UnitName": "arima", "Upgrades": "9", "UnitCount": "4"},
