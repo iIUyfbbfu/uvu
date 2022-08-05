@@ -1,41 +1,41 @@
-{
-  "__IGNORE": {"Collectable Name" : "In-Game Unit Name"},
+[
+  {"Type": "__IGNORE", "Collectable Name" : "In-Game Unit Name"},
   
   
-  "__IGNORE": {"MYTHICS": "true"},
-  "_": {"CollectableName": "brulo","UnitName": "broly", "Upgrades": "8", "UnitCount": "4"},
-  "_": {"CollectableName": "legendary brulo", "UnitName": "broly", "Upgrades": "9", "UnitCount": "4"},
+  {"Type": "__IGNORE", "MYTHICS": "true"},
+  {"CollectableName": "brulo","UnitName": "broly", "Upgrades": "8", "UnitCount": "4"},
+  {"CollectableName": "legendary brulo", "UnitName": "broly", "Upgrades": "9", "UnitCount": "4"},
   
-  "_": {"CollectableName": "whitehair", "UnitName": "whitebeard", "Upgrades": "8", "UnitCount": "3"},
-  "_": {"CollectableName": "emperor whitehair", "UnitName": "whitebeard", "Upgrades": "9", "UnitCount": "3"},
+  {"CollectableName": "whitehair", "UnitName": "whitebeard", "Upgrades": "8", "UnitCount": "3"},
+  {"CollectableName": "emperor whitehair", "UnitName": "whitebeard", "Upgrades": "9", "UnitCount": "3"},
   
-  "_": {"CollectableName": "akano", "UnitName": "akainu", "Upgrades": "8", "UnitCount": "4"},
-  "_": {"CollectableName": "fleet admiral akano", "UnitName": "akainu", "Upgrades": "9", "UnitCount": "4"},
+  {"CollectableName": "akano", "UnitName": "akainu", "Upgrades": "8", "UnitCount": "4"},
+  {"CollectableName": "fleet admiral akano", "UnitName": "akainu", "Upgrades": "9", "UnitCount": "4"},
   
-  "_": {"CollectableName": "red scar", "UnitName": "shanks", "Upgrades": "8", "UnitCount": "3"},
-  "_": {"CollectableName": "red scar (conqueror)", "UnitName": "shanks", "Upgrades": "9", "UnitCount": "3"},
+  {"CollectableName": "red scar", "UnitName": "shanks", "Upgrades": "8", "UnitCount": "3"},
+  {"CollectableName": "red scar (conqueror)", "UnitName": "shanks", "Upgrades": "9", "UnitCount": "3"},
   
-  "_": {"CollectableName": "levy", "UnitName": "levi", "Upgrades": "8", "UnitCount": "6"},
-  "_": {"CollectableName": "levy ackman", "UnitName": "levi", "Upgrades": "9", "UnitCount": "6"},
+  {"CollectableName": "levy", "UnitName": "levi", "Upgrades": "8", "UnitCount": "6"},
+  {"CollectableName": "levy ackman", "UnitName": "levi", "Upgrades": "9", "UnitCount": "6"},
   
-  "_": {"CollectableName": "mochi", "UnitName": "katakuri", "Upgrades": "8", "UnitCount": "4"},
+  {"CollectableName": "mochi", "UnitName": "katakuri", "Upgrades": "8", "UnitCount": "4"},
   
-  "_": {"CollectableName": "ariva", "UnitName": "arima", "Upgrades": "8", "UnitCount": "4"},
-  "_": {"CollectableName": "ariva (reaper)", "UnitName": "arima", "Upgrades": "9", "UnitCount": "4"},
-  
-  
-  "__IGNORE": {"LEGENDS": "true"},
-  "_": {"CollectableName": "orwin", "UnitName": "erwin", "Upgrades": "6", "UnitCount": "3"},
-  
-  "_": {"CollectableName": "blackhair", "UnitName": "blackbeard"},
-  
-  "_": {"CollectableName": "goku blue", "UnitName": "goku_ssb"},
-  
-  "_": {"CollectableName": "erein", "UnitName": "attack_titan_smaller"},
-  
-  "_": {"CollectableName": "blumy", "UnitName": "bulma", "Upgrades": "6", "UnitCount": "1"},
+  {"CollectableName": "ariva", "UnitName": "arima", "Upgrades": "8", "UnitCount": "4"},
+  {"CollectableName": "ariva (reaper)", "UnitName": "arima", "Upgrades": "9", "UnitCount": "4"},
   
   
-  "__IGNORE": {"EPICS": "true"},
-  "_": {"CollectableName": "speedcart", "UnitName": "speedwagon", "Upgrades": "4", "UnitCount": "3"}
-}
+  {"Type": "__IGNORE", "LEGENDS": "true"},
+  {"CollectableName": "orwin", "UnitName": "erwin", "Upgrades": "6", "UnitCount": "3"},
+  
+  {"CollectableName": "blackhair", "UnitName": "blackbeard"},
+  
+  {"CollectableName": "goku blue", "UnitName": "goku_ssb"},
+  
+  {"CollectableName": "erein", "UnitName": "attack_titan_smaller"},
+  
+  {"CollectableName": "blumy", "UnitName": "bulma", "Upgrades": "6", "UnitCount": "1"},
+  
+  
+  {"Type": "__IGNORE", "EPICS": "true"},
+  {"CollectableName": "speedcart", "UnitName": "speedwagon", "Upgrades": "4", "UnitCount": "3"}
+]
