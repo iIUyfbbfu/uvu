@@ -115,30 +115,59 @@ local Endpoints = setmetatable({}, {
 
 local unitConversion do
     local cache = {}
-    for _,v in ipairs(__unitConversion) do if v.Type ~= '__IGNORE' then table.insert(cache, v) end end
+    for i,v in ipairs(__unitConversion) do
+        if v.Type ~= '__IGNORE' then
+            table.insert(cache, {
+                CollectableName = v.CollectableName,
+                UnitName = v.UnitName,
+                Upgrades = v.Upgrades,
+                UnitCount = v.UnitCount
+            })
+            print(table.unpack(v))
+        end
+    end
     
     unitConversion = {
         searchForCollectable = function(inGameUnitName, searchIn)
             local names = {}
             for _, v in next, cache do
                 if v.UnitName:lower() == inGameUnitName:lower() then
-                    table.insert(names, v.CollectableName)
+                    table.insert(names, {
+                        Name = v.CollectableName,
+                        Upgrades = v.Upgrades or 9,
+                        UnitCount = v.UnitCount or 6
+                    })
                 end
             end
-            
-            for _, v in next, names do if (searchIn or ''):lower():find('^' .. v:lower()) then return true end end
-            return names
+
+            for _, v in next, names do if not searchIn or (searchIn and (searchIn):lower():find('^' .. v.Name:lower())) then return v end end
         end,
         searchForUnit = function(CollectableName, searchIn)
             local names = {}
             for _, v in next, cache do
+                print(CollectableName, v.CollectableName, v.UnitName, v.Upgrades, v.UnitCount, '\n')
                 if v.CollectableName:lower() == CollectableName:lower() then
-                    table.insert(names, v.UnitName)
+                    table.insert(names, {
+                        Name = v.UnitName,
+                        Upgrades = v.Upgrades or 9,
+                        UnitCount = v.UnitCount or 6
+                    })
                 end
             end
             
-            for _, v in next, names do if (searchIn or ''):lower():find('^' .. v:lower()) then return true end end
-            return names
+            for _, v in next, names do if not searchIn or (searchIn and (searchIn):lower():find('^' .. v.Name:lower())) then print(v.Name, v.Upgrades, v.UnitCount); return v end end
+        end,
+        pullUnitInfo = function(CollectableOrInGameName)
+            for _, v in next, cache do
+                if table.find({v.CollectableName:lower(), v.UnitName:lower()}, CollectableOrInGameName:lower()) then
+                    return {
+                        UnitName = v.UnitName,
+                        CollectableName = v.CollectableName,
+                        Upgrades = tonumber(v.Upgrades or 9),
+                        UnitCount = tonumber(v.UnitCount or 6)
+                    }
+                end
+            end
         end,
         raw = __unitConversion,
     }
@@ -287,7 +316,7 @@ end
 
 -- // Making UI
 local DiscordLib = loadstring(game:HttpGet 'https://raw.githubusercontent.com/iIUyfbbfu/uvu/main/DiscordUI.lua')()
-local win = DiscordLib:Window('Exploit v0.0.3' .. ' - ' .. tostring(identifyexecutor()))
+local win = DiscordLib:Window('Exploit v0.0.4' .. ' - ' .. tostring(identifyexecutor()))
 
 local Server = win:Server('Anime Adventures', 'http://www.roblox.com/asset/?id=6031075938')
 local Misc_Channel = Server:Channel('Misc')
@@ -876,6 +905,10 @@ end
 -- // Tabs [[DEBUG]]
 local DebugServer = win:Server('Debug', 'http://www.roblox.com/asset/?id=10425947463')
 local Debug_Channel = DebugServer:Channel('Reset')
+Debug_Channel:Button('Return to lobby', function()
+    Client.TeleportService:Teleport(8304191830, Client.LocalPlayer)
+    DiscordLib:Notification('NOTICE', 'Rejoining Main Game...', 'Okay')
+end)
 Debug_Channel:Button('Re-Align Exploit Ui', function()
     win:ResetWindow()
 end)
@@ -900,12 +933,12 @@ task.spawn(function()
     local GameFinished = workspace:WaitForChild("_DATA"):WaitForChild("GameFinished")
 
     local pastWave = function()
-        return tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value)
+        return getgenv().autoSell and tonumber(getgenv().sellAtWave) and (tonumber(getgenv().sellAtWave) ~= 0) and (tonumber(getgenv().sellAtWave) <= _wave.Value)
     end
     local getCurrentUnits = function()
         local curr = {}
         for _, v in next, _UNITS:GetChildren() do
-            if v:FindFirstChild('_stats') and v._stats:FindFirstChild('player') and (v._stats.player.Value == Client.LocalPlayer) and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
+            if v:FindFirstChild('_stats') and v._stats:FindFirstChild('player') and v._stats:FindFirstChild('upgrade') and (v._stats.player.Value == Client.LocalPlayer) and not table.find({'aot_generic', 'attack_titan', 'titan'}, v.Name) then
                 table.insert(curr, v)
             end
         end
@@ -932,14 +965,14 @@ task.spawn(function()
             if getgenv().autoAbility and not pastWave() then
                 for _, v in next, getCurrentUnits() do
                     local s, e = pcall(function()
-                        local upgrades = v._stats.upgrade.Value
-                        local lastCast = v._stats.last_active_cast.Value
+                        local upgrades = v:FindFirstChild('_stats') and v._stats:FindFirstChild('upgrade') and v._stats.upgrade.Value
+                        local lastCast = v:FindFirstChild('_stats') and v._stats:FindFirstChild('last_active_cast') and v._stats.last_active_cast.Value
 
-                        if (upgrades >= 3) and (v.Name:lower() == 'erwin') and ((tick() - getgenv().lastErwin) >= 21) and
+                        if upgrades and lastCast and (upgrades >= 3) and (v.Name:lower() == 'erwin') and ((tick() - getgenv().lastErwin) >= 21) and
                             (tick() - lastCast) >= 44 then
                             getgenv().lastErwin = tick()
                             Endpoints.use_active_attack:InvokeServer(v)
-                        elseif v.Name:lower() ~= 'erwin' then
+                        elseif upgrades and lastCast and (v.Name:lower() ~= 'erwin') then
                             Endpoints.use_active_attack:InvokeServer(v)
                         end
                     end)
@@ -960,7 +993,8 @@ task.spawn(function()
                         local unitinfo = getgenv().SelectedUnits['U' .. t]
                         if unitinfo ~= nil then
                             local unitinfo_ = unitinfo:split(" #")
-                            if unitConversion.searchForCollectable(v.Name, unitinfo_[1]:lower()) then
+                            local unitinfo_2 = unitConversion.searchForCollectable(v.Name, unitinfo_[1]:lower())
+                            if unitinfo_2 and ( not unitinfo_2.Upgrades or (tonumber(unitinfo_2.Upgrades) > v._stats.upgrade.Value) ) then
                                 table.insert(toUpgrade, {
                                     Priority = (getgenv().upgradePriorityEnabled and tonumber(getgenv().upgradePriority[t])) or 0,
                                     Object = v
@@ -972,10 +1006,19 @@ task.spawn(function()
             end
 
             for i, v in next, getgenv().placePriority do
-                table.insert(toPlace, {
-                    Unit = i,
-                    Priority = tonumber((getgenv().placePriorityEnabled and v) or '0')
-                })
+                local f,g = pcall(function()
+                    local unitinfo = getgenv().SelectedUnits[i]
+                    if unitinfo ~= nil then
+                        local unitinfo_ = unitinfo:split(" #")
+                        local unitinfo_2 = unitConversion.pullUnitInfo(unitinfo_[1])
+                        table.insert(toPlace, {
+                            Unit = i,
+                            UnitCount = unitinfo_2.UnitCount or 6,
+                            Priority = tonumber((getgenv().placePriorityEnabled and v) or '0')
+                        })
+                    end
+                end)
+                if not f then print(g) end
             end
 
             table.sort(toUpgrade, function(a, b) return tonumber(a.Priority) > tonumber(b.Priority) end)
@@ -994,7 +1037,7 @@ task.spawn(function()
                     local maxUnits = 10
                     local succ, err = pcall(function()
                         for _, v in next, toUpgrade do
-                            if v.Object['_stats'] and v.Object['_stats'].upgrade and ((v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits)) then
+                            if v.Object:FindFirstChild('_stats') and v.Object._stats:FindFirstChild('upgrade') and ((v.Object['_stats'].upgrade.Value == 0) or (v.Object['_stats'].upgrade.Value <= maxUnits)) then
                                 local start = tick()
                                 repeat
                                     pcall(function() Endpoints.upgrade_unit_ingame:InvokeServer(v.Object) end)
@@ -1010,59 +1053,63 @@ task.spawn(function()
 
                 if getgenv().autoPlace then
                     local x, y, z = 4, 3, 4
-
-                    for _,v in next, toPlace do
-                        local unitinfo = getgenv().SelectedUnits[v.Unit]
-                        if unitinfo ~= nil then
-                            local start = tick()
-                            local unitinfo_ = unitinfo:split(" #")
-                            local pos = getgenv().SpawnUnitPos["UP" .. v.Unit:sub(-1)]
-                            local checkCount = function(num)
-                                local count = 0
-                                for _, v2 in next, getCurrentUnits() do
-                                    pcall(function()
-                                        if unitConversion.searchForCollectable(v2.Name, unitinfo_[1]:lower()) then
-                                            count = count + 1
-                                        end
-                                    end)
+                    local s,e = pcall(function()
+                        for _,v in next, toPlace do
+                            local unitinfo = getgenv().SelectedUnits[v.Unit]
+                            if unitinfo ~= nil then
+                                local start = tick()
+                                local unitinfo_ = unitinfo:split(" #")
+                                local pos = getgenv().SpawnUnitPos["UP" .. v.Unit:sub(-1)]
+                                local checkCount = function(num)
+                                    local count = 0
+                                    for _, v2 in next, getCurrentUnits() do
+                                        pcall(function()
+                                            if unitConversion.searchForCollectable(v2.Name, unitinfo_[1]:lower()) then
+                                                count = count + 1
+                                            end
+                                        end)
+                                    end
+                                    return (count >= tonumber(num))
                                 end
-                                return (count >= num)
+
+                                if not checkCount(v.UnitCount) then
+                                    repeat
+                                        -- place units 0
+                                        Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                            Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                        )
+
+                                        -- place units 1
+                                        Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                            Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                        )
+
+                                        -- place units 2 
+                                        Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                            Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                        )
+
+                                        -- place units 3 
+                                        Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                            Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                        )
+
+                                        -- place units 4
+                                        Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                            Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
+                                        )
+
+                                        -- place units 5
+                                        Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
+                                            Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
+                                        )
+                                        task.wait()
+                                    until checkCount(1) or ((tick() - start) >= v.Priority) or not getgenv().autoPlace or not getgenv().autoFarm
+                                end
                             end
-
-                            repeat
-                                -- place units 0
-                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
-                                    Vector3.new(pos["x"], pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                                )
-
-                                -- place units 1
-                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
-                                    Vector3.new(pos["x"] - x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                                )
-
-                                -- place units 2 
-                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
-                                    Vector3.new(pos["x"], pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                                )
-
-                                -- place units 3 
-                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
-                                    Vector3.new(pos["x"] - x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                                )
-
-                                -- place units 4
-                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
-                                    Vector3.new(pos["x"] + x, pos["y"], pos["z"] + z), Vector3.new(0, 0, -1))
-                                )
-
-                                -- place units 5
-                                Endpoints.spawn_unit:InvokeServer(unitinfo_[2], CFrame.new(
-                                    Vector3.new(pos["x"] + x, pos["y"], pos["z"]), Vector3.new(0, 0, -1))
-                                )
-                                task.wait()
-                            until checkCount(1) or ((tick() - start) >= v.Priority)
                         end
-                    end
+                    end)
+                    if not s then print(e) end
                 end
 
             end
