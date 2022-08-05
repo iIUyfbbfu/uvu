@@ -115,7 +115,7 @@ local Endpoints = setmetatable({}, {
 
 local unitConversion do
     local cache = {}
-    for i,v in ipairs(__unitConversion) do
+    for _,v in ipairs(__unitConversion) do
         if v.Type ~= '__IGNORE' then
             table.insert(cache, {
                 CollectableName = v.CollectableName,
@@ -123,7 +123,6 @@ local unitConversion do
                 Upgrades = v.Upgrades,
                 UnitCount = v.UnitCount
             })
-            print(table.unpack(v))
         end
     end
     
@@ -145,7 +144,6 @@ local unitConversion do
         searchForUnit = function(CollectableName, searchIn)
             local names = {}
             for _, v in next, cache do
-                print(CollectableName, v.CollectableName, v.UnitName, v.Upgrades, v.UnitCount, '\n')
                 if v.CollectableName:lower() == CollectableName:lower() then
                     table.insert(names, {
                         Name = v.UnitName,
