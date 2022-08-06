@@ -129,7 +129,7 @@ local unitConversion do
     unitConversion = {
         searchForCollectable = function(inGameUnitName, searchIn)
             local names = {}
-            local current = {matchCase = 0, v = {}}
+            local current = {matchCase = 0}
             for _, v in next, cache do
                 if v.UnitName:lower() == inGameUnitName:lower() then
                     table.insert(names, {
@@ -141,7 +141,7 @@ local unitConversion do
             end
 
             for _, v in next, names do
-                print(v.Name, searchIn, select(2, searchIn:lower():find('^' .. v.Name:lower()) or '0'))
+                print(v.Name, searchIn, searchIn:lower():find('^' .. v.Name:lower()))
                 if not searchIn or (searchIn and ((select(2, searchIn:lower():find('^' .. v.Name:lower()) or '0') or 0) > current.matchCase) ) then
                     current.v = v
                 end
