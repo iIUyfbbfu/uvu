@@ -129,6 +129,7 @@ local unitConversion do
     unitConversion = {
         searchForCollectable = function(inGameUnitName, searchIn)
             local names = {}
+            local current = {matchCase = 0, v = {}}
             for _, v in next, cache do
                 if v.UnitName:lower() == inGameUnitName:lower() then
                     table.insert(names, {
@@ -139,10 +140,17 @@ local unitConversion do
                 end
             end
 
-            for _, v in next, names do if not searchIn or (searchIn and (searchIn):lower():find('^' .. v.Name:lower())) then return v end end
+            for _, v in next, names do
+                if not searchIn or (searchIn and select(2, searchIn:lower():find('^' .. v.Name:lower())) > current.matchCase ) then
+                    current.v = v
+                end
+            end
+
+            return current.v
         end,
         searchForUnit = function(CollectableName, searchIn)
             local names = {}
+            local current = {matchCase = 0, v = {}}
             for _, v in next, cache do
                 if v.CollectableName:lower() == CollectableName:lower() then
                     table.insert(names, {
@@ -153,7 +161,13 @@ local unitConversion do
                 end
             end
             
-            for _, v in next, names do if not searchIn or (searchIn and (searchIn):lower():find('^' .. v.Name:lower())) then print(v.Name, v.Upgrades, v.UnitCount); return v end end
+            for _, v in next, names do
+                if not searchIn or (searchIn and select(2, searchIn:lower():find('^' .. v.Name:lower())) > current.matchCase ) then
+                    current.v = v
+                end
+            end
+
+            return current.v
         end,
         pullUnitInfo = function(CollectableOrInGameName)
             for _, v in next, cache do
