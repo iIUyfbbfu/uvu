@@ -141,7 +141,7 @@ local unitConversion do
             end
 
             for _, v in next, names do
-                if not searchIn or (searchIn and (select(2, searchIn:lower():find('^' .. v.Name:lower()) or 0) > current.matchCase) ) then
+                if not searchIn or (searchIn and (select(2, searchIn:lower():find('^' .. v.Name:lower()) or '0') > current.matchCase) ) then
                     current.v = v
                 end
             end
