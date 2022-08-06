@@ -1000,7 +1000,7 @@ task.spawn(function()
             currentUnits, toUpgrade, toPlace = getCurrentUnits(), {}, {}
 
             for _, v in next, currentUnits do
-                pcall(function()
+                local s,f = pcall(function()
                     for t = 1, 6 do
                         local unitinfo = getgenv().SelectedUnits['U' .. t]
                         if unitinfo ~= nil then
@@ -1015,6 +1015,7 @@ task.spawn(function()
                         end
                     end
                 end)
+                if not s then print(f, '1018') end
             end
 
             for i, v in next, getgenv().placePriority do
