@@ -142,7 +142,9 @@ local unitConversion do
 
             for _, v in next, names do
                 local match = {searchIn:lower():find('^' .. v.Name:lower())}
-                if not searchIn or (searchIn and ((match[2] or 0) > current.matchCase) ) then
+                if searchIn:lower() == v.Name:lower() then
+                    return v
+                elseif not searchIn or (searchIn and ((match[2] or 0) > current.matchCase) ) then
                     current.matchCase = match[2]
                     current.v = v
                 end
@@ -165,7 +167,9 @@ local unitConversion do
             
             for _, v in next, names do
                 local match = {searchIn:lower():find('^' .. v.Name:lower())}
-                if not searchIn or (searchIn and ((match[2] or 0) > current.matchCase) ) then
+                if searchIn:lower() == v.Name:lower() then
+                    return v
+                elseif not searchIn or (searchIn and ((match[2] or 0) > current.matchCase) ) then
                     current.matchCase = match[2]
                     current.v = v
                 end
