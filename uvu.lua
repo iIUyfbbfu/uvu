@@ -20,6 +20,7 @@ local GenvVariables = {
 
     -- FARM
     autoSell = false,
+    autoLeave = true,
     autoFarm = false,
     autoPlace = false,
     autoStart = false,
@@ -507,6 +508,10 @@ Farming_Channel:Toggle("Auto Ability", getgenv().autoAbility, function(bool)
     saveSaveFile()
 end)
 Farming_Channel:Seperator()
+Farming_Channel:Toggle("Auto Leave", getgenv().autoLeave, function(bool)
+    getgenv().autoLeave = bool
+    saveSaveFile()
+end)
 Farming_Channel:Toggle("Auto Sell at Spectic Wave", getgenv().autoSell, function(bool)
     getgenv().autoSell = bool
     saveSaveFile()
@@ -976,7 +981,7 @@ task.spawn(function()
             end)
             print(succ, err)
             task.wait(2)
-            Client.TeleportService:Teleport(8304191830, Client.LocalPlayer)
+            if getgenv().autoLeave then Client.TeleportService:Teleport(8304191830, Client.LocalPlayer) end
         end
     end)
 
