@@ -25,6 +25,8 @@
   
   {"CollectableName": "eta", "UnitName": "eto", "Upgrades": "8", "UnitCount": "4"},
   
+  {"CollectableName": "juozu", "UnitName": "juuzou", "Upgrades": "8", "UnitCount": "4"},
+  
   
   {"Type": "__IGNORE", "LEGENDS": "true"},
   {"CollectableName": "orwin", "UnitName": "erwin", "Upgrades": "6", "UnitCount": "3"},
