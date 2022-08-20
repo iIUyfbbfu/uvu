@@ -41,5 +41,7 @@
   
   
   {"Type": "__IGNORE", "EPICS": "true"},
-  {"CollectableName": "speedcart", "UnitName": "speedwagon", "Upgrades": "4", "UnitCount": "3"}
+  {"CollectableName": "speedcart", "UnitName": "speedwagon", "Upgrades": "4", "UnitCount": "3"},
+  
+  {"CollectableName": "jio", "UnitName": "dio", "Upgrades": "6", "UnitCount": "3"}
 ]
