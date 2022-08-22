@@ -284,8 +284,8 @@ local Post = function()
     }
 
     local data = {
-        content = '<@' ..
-            (getgenv().webhookMention and getgenv().webhookMentionID and tostring(getgenv().webhookMentionID)) .. '>',
+        content =
+            (getgenv().webhookMention and getgenv().webhookMentionID and ('<@' .. tostring(getgenv().webhookMentionID)  .. '>')) or 'Completed!',
         username = 'Anime Adventures',
         avatar_url = 'https://tr.rbxcdn.com/e5b5844fb26df605986b94d87384f5fb/150/150/Image/Jpeg',
         embeds = {{
