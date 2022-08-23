@@ -2,6 +2,9 @@
   {"Type": "__IGNORE", "Collectable Name" : "In-Game Unit Name"},
   
   
+  {"Type": "__IGNORE", "SECRET": "true"},
+  
+  
   {"Type": "__IGNORE", "MYTHICS": "true"},
   {"CollectableName": "brulo","UnitName": "broly", "Upgrades": "8", "UnitCount": "4"},
   {"CollectableName": "legendary brulo", "UnitName": "broly", "Upgrades": "9", "UnitCount": "4"},
@@ -26,6 +29,8 @@
   {"CollectableName": "eta", "UnitName": "eto", "Upgrades": "8", "UnitCount": "4"},
   
   {"CollectableName": "juozu", "UnitName": "juuzou", "Upgrades": "8", "UnitCount": "4"},
+  
+  {"CollectableName": "kisoko", "UnitName": "kisuke", "Upgrades": "8", "UnitCount": "3"},
   
   
   {"Type": "__IGNORE", "LEGENDS": "true"},
