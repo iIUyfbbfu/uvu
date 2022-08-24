@@ -29,6 +29,7 @@
   {"CollectableName": "eta", "UnitName": "eto", "Upgrades": "8", "UnitCount": "4"},
   
   {"CollectableName": "juozu", "UnitName": "juuzou", "Upgrades": "8", "UnitCount": "4"},
+  {"CollectableName": "juozu (joker)", "UnitName": "juuzou", "Upgrades": "9", "UnitCount": "4"},
   
   {"CollectableName": "kisoko", "UnitName": "kisuke", "Upgrades": "8", "UnitCount": "3"},
   
