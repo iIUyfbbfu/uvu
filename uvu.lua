@@ -224,6 +224,7 @@ local saveSaveFile = function()
 end
 
 getgenv().lastErwin = 0
+getgenv().lastKisoko = 0
 getgenv().levels = getgenv().levels or {}
 loadSaveFile()
 
@@ -1005,6 +1006,9 @@ task.spawn(function()
                         if upgrades and lastCast and (upgrades >= 3) and (v.Name:lower() == 'erwin') and ((tick() - getgenv().lastErwin) >= 21) and
                             (tick() - lastCast) >= 44 then
                             getgenv().lastErwin = tick()
+                            Endpoints.use_active_attack:InvokeServer(v)
+                        elseif upgrades and lastCast and (upgrades >= 6) and (v.Name:lower() == 'kisuke_evolved') and ((tick() - getgenv().lastKisoko) >= 34) and (tick() - lastCast) >= 94 then
+                            getgenv().lastKisoko = tick()
                             Endpoints.use_active_attack:InvokeServer(v)
                         elseif upgrades and lastCast and (v.Name:lower() ~= 'erwin') then
                             Endpoints.use_active_attack:InvokeServer(v)
