@@ -957,7 +957,7 @@ function DiscordLib:Window(text)
 				{BackgroundTransparency = 1}
 			):Play()
 			wait(.2)
-			NotificationHolder:Destroy()
+			NotificationHolder.Visible = false
 		end)
 
 		CloseBtn2.MouseEnter:Connect(function()
@@ -1632,6 +1632,7 @@ function DiscordLib:Window(text)
 	local ServerHold = {}
     function ServerHold:ResetWindow()
         MainFrame.Position = UDim2.new(0.5,0,0.5,0)
+        MainFrame.Size = UDim2.new(0, 681, 0, 396)
     end
 	function ServerHold:Server(text, img)
 		local fc = false
@@ -2138,6 +2139,7 @@ function DiscordLib:Window(text)
 					):Play()
 				end)
 				ChannelHolder.CanvasSize = UDim2.new(0,0,0,ChannelHolderLayout.AbsoluteContentSize.Y)
+				return Button
 			end
 
 			function ChannelContent:Toggle(text, default, callback)
