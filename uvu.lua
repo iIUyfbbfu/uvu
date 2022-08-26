@@ -956,7 +956,7 @@ local loadFriends = function()
     for _, friend in next, Client.LocalPlayer:GetFriendsOnline(200) do
        print(friend.UserName)
        if (friend.PlaceId == 8304191830) and friend.LastLocation and (friend.LocationType == 4) then
-             print(friend.UserName)
+             print(friend.UserName, friend.LastLocation, friend.LocationType)
             local newButton = Debug_ClientChannel:Button(friend.UserName, function()
                 Client.TeleportService:TeleportToPlaceInstance(friend.PlaceId, friend.VisitorId, Client.LocalPlayer)
                 DiscordLib:Notification('NOTICE', 'Joining friend [' .. friend.UserName .. ']', 'Okay')
