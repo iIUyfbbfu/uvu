@@ -787,24 +787,29 @@ local Debug_Keybinds = DebugServer:Channel('Keybinds')
 
 local currloadedfriends = {}
 local loadFriends = function()
+    local internal = {}
     -- Destroy
     for _, v in next, currloadedfriends do
-        v:Destroy()
+        v.Priority:Destroy()
     end
     currloadedfriends = {}
     
     -- Load
     for _, friend in next, Client.LocalPlayer:GetFriendsOnline(200) do
-       print(friend.UserName)
-       if (friend.PlaceId == 8304191830) and friend.LastLocation and (friend.LocationType == 4) then
-             print(friend.UserName, friend.LastLocation, friend.LocationType)
-            local newButton = Debug_ClientChannel:Button(friend.UserName, function()
-                Client.TeleportService:TeleportToPlaceInstance(friend.PlaceId, friend.VisitorId, Client.LocalPlayer)
-                DiscordLib:Notification('NOTICE', 'Joining friend [' .. friend.UserName .. ']', 'Okay')
-            end)
-            
-           table.insert(currloadedfriends, newButton)
+       if friend.LastLocation and (friend.LocationType == 4) then
+            table.insert(internal, {
+                Priority = ((friend.PlaceId == game.PlaceId) and 1) or 0,
+                friend = friend
+            })
        end
+    end
+    table.sort(internal, function(a, b) return a.Priority > b.Priority end)
+    
+    for _, v in next, internal do
+        table.insert(currloadedfriends, Debug_ClientChannel:Button(v.UserName, function()
+            Client.TeleportService:TeleportToPlaceInstance(v.PlaceId, v.VisitorId, Client.LocalPlayer)
+            DiscordLib:Notification('NOTICE', 'Joining friend [' .. v.UserName .. '] in [' .. Client.MarketplaceService:GetProductInfo(v.PlaceId).Name .. ']', 'Okay')
+        end))
     end
 end
 
