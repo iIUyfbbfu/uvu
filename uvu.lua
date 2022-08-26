@@ -939,11 +939,39 @@ end
 
 -- // Tabs [[DEBUG]]
 local DebugServer = win:Server('Debug', 'http://www.roblox.com/asset/?id=10425947463')
-local Debug_Channel = DebugServer:Channel('Reset')
-Debug_Channel:Button('Return to lobby', function()
+local Debug_ClientChannel = DebugServer:Channel('Client')
+local Debug_Channel = DebugServer:Channel('Exploit')
+
+local currloadedfriends = {}
+local loadFriends = function()
+    -- Destroy
+    for _, v in next, currloadedfriends do
+        v:Destroy()
+    end
+    currloadedfriends = {}
+    
+    -- Load
+    for _, friend in next, Client.LocalPlayer:GetFriendsOnline() do  
+       if (friend.PlaceId == 8304191830) and friend.LastLocation and (LocationType == 4) then
+            local newButton = Debug_ClientChannel:Button(friend.UserName, function()
+                Client.TeleportService:TeleportToPlaceInstance(friend.PlaceId, friend.VisitorId, Client.LocalPlayer)
+                DiscordLib:Notification('NOTICE', 'Joining friend [' .. friend.UserName .. ']', 'Okay')
+            end)
+            
+           table.insert(currloadedfriends, newButton)
+       end
+    end
+end
+
+Debug_ClientChannel:Button('Return to lobby', function()
     Client.TeleportService:Teleport(8304191830, Client.LocalPlayer)
     DiscordLib:Notification('NOTICE', 'Rejoining Main Game...', 'Okay')
 end)
+Debug_ClientChannel:Seperator()
+Debug_ClientChannel:Label('Join Friend...')
+Debug_ClientChannel:Button('Reload Online Friends', loadFriends)
+
+-- Debug 2
 Debug_Channel:Button('Re-Align Exploit Ui', function()
     win:ResetWindow()
 end)
