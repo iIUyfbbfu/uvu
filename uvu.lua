@@ -779,6 +779,66 @@ Webhook_Channel:Button('Test Webhook', function()
     print(success, err)
 end)
 
+-- // Tabs [[DEBUG]]
+local DebugServer = win:Server('Debug', 'http://www.roblox.com/asset/?id=10425947463')
+local Debug_ClientChannel = DebugServer:Channel('Client')
+local Debug_Channel = DebugServer:Channel('Exploit')
+local Debug_Keybinds = DebugServer:Channel('Keybinds')
+
+local currloadedfriends = {}
+local loadFriends = function()
+    -- Destroy
+    for _, v in next, currloadedfriends do
+        v:Destroy()
+    end
+    currloadedfriends = {}
+    
+    -- Load
+    for _, friend in next, Client.LocalPlayer:GetFriendsOnline(200) do
+       print(friend.UserName)
+       if (friend.PlaceId == 8304191830) and friend.LastLocation and (friend.LocationType == 4) then
+             print(friend.UserName, friend.LastLocation, friend.LocationType)
+            local newButton = Debug_ClientChannel:Button(friend.UserName, function()
+                Client.TeleportService:TeleportToPlaceInstance(friend.PlaceId, friend.VisitorId, Client.LocalPlayer)
+                DiscordLib:Notification('NOTICE', 'Joining friend [' .. friend.UserName .. ']', 'Okay')
+            end)
+            
+           table.insert(currloadedfriends, newButton)
+       end
+    end
+end
+
+Debug_ClientChannel:Button('Return to lobby', function()
+    Client.TeleportService:Teleport(8304191830, Client.LocalPlayer)
+    DiscordLib:Notification('NOTICE', 'Rejoining Main Game...', 'Okay')
+end)
+Debug_ClientChannel:Seperator()
+Debug_ClientChannel:Label('Join Friend...')
+Debug_ClientChannel:Button('Reload Online Friends', function()
+    loadFriends()
+end)
+loadFriends()
+
+-- Debug 2
+Debug_Channel:Button('Re-Align Exploit Ui', function()
+    win:ResetWindow()
+end)
+Debug_Channel:Seperator()
+Debug_Channel:Label('---- DANGER ----\n(WARNING! This will affect current settings!)')
+Debug_Channel:Button('Reset Exploit Data', function()
+    for i, v in next, GenvVariables do
+        getgenv()[i] = v
+    end
+    saveSaveFile()
+    DiscordLib:Notification('NOTICE', 'Reset All Saved Exploit Data!', 'Okay')
+end)
+
+--Debug 3
+Debug_Keybinds:Bind('Reset UI', getgenv().resetUI, function()
+    win:ResetWindow()
+end)
+
+
 -- // PLACE SPECIFIC
 if game.PlaceId == 8304191830 then
     Misc_Channel:Seperator()
@@ -938,64 +998,6 @@ else
     end
 end
 
--- // Tabs [[DEBUG]]
-local DebugServer = win:Server('Debug', 'http://www.roblox.com/asset/?id=10425947463')
-local Debug_ClientChannel = DebugServer:Channel('Client')
-local Debug_Channel = DebugServer:Channel('Exploit')
-local Debug_Keybinds = DebugServer:Channel('Keybinds')
-
-local currloadedfriends = {}
-local loadFriends = function()
-    -- Destroy
-    for _, v in next, currloadedfriends do
-        v:Destroy()
-    end
-    currloadedfriends = {}
-    
-    -- Load
-    for _, friend in next, Client.LocalPlayer:GetFriendsOnline(200) do
-       print(friend.UserName)
-       if (friend.PlaceId == 8304191830) and friend.LastLocation and (friend.LocationType == 4) then
-             print(friend.UserName, friend.LastLocation, friend.LocationType)
-            local newButton = Debug_ClientChannel:Button(friend.UserName, function()
-                Client.TeleportService:TeleportToPlaceInstance(friend.PlaceId, friend.VisitorId, Client.LocalPlayer)
-                DiscordLib:Notification('NOTICE', 'Joining friend [' .. friend.UserName .. ']', 'Okay')
-            end)
-            
-           table.insert(currloadedfriends, newButton)
-       end
-    end
-end
-
-Debug_ClientChannel:Button('Return to lobby', function()
-    Client.TeleportService:Teleport(8304191830, Client.LocalPlayer)
-    DiscordLib:Notification('NOTICE', 'Rejoining Main Game...', 'Okay')
-end)
-Debug_ClientChannel:Seperator()
-Debug_ClientChannel:Label('Join Friend...')
-Debug_ClientChannel:Button('Reload Online Friends', function()
-    loadFriends()
-end)
-loadFriends()
-
--- Debug 2
-Debug_Channel:Button('Re-Align Exploit Ui', function()
-    win:ResetWindow()
-end)
-Debug_Channel:Seperator()
-Debug_Channel:Label('---- DANGER ----\n(WARNING! This will affect current settings!)')
-Debug_Channel:Button('Reset Exploit Data', function()
-    for i, v in next, GenvVariables do
-        getgenv()[i] = v
-    end
-    saveSaveFile()
-    DiscordLib:Notification('NOTICE', 'Reset All Saved Exploit Data!', 'Okay')
-end)
-
---Debug 3
-Debug_Keybinds:Bind('Reset UI', getgenv().resetUI, function()
-    win:ResetWindow()
-end)
 
 -- // Auto Sell and Abilities and Upgrade
 task.spawn(function()
