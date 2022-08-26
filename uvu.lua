@@ -806,9 +806,9 @@ local loadFriends = function()
     table.sort(internal, function(a, b) return a.Priority > b.Priority end)
     
     for _, v in next, internal do
-        table.insert(currloadedfriends, Debug_ClientChannel:Button(v.UserName, function()
-            Client.TeleportService:TeleportToPlaceInstance(v.PlaceId, v.VisitorId, Client.LocalPlayer)
-            DiscordLib:Notification('NOTICE', 'Joining friend [' .. v.UserName .. '] in [' .. Client.MarketplaceService:GetProductInfo(v.PlaceId).Name .. ']', 'Okay')
+        table.insert(currloadedfriends, Debug_ClientChannel:Button(v.friend.UserName, function()
+            Client.TeleportService:TeleportToPlaceInstance(v.friend.PlaceId, v.friend.VisitorId, Client.LocalPlayer)
+            DiscordLib:Notification('NOTICE', 'Joining friend [' .. v.friend.UserName .. '] in [' .. Client.MarketplaceService:GetProductInfo(v.friend.PlaceId).Name .. ']', 'Okay')
         end))
     end
 end
