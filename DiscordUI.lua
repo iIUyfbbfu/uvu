@@ -3146,7 +3146,7 @@ function DiscordLib:Window(text)
 				Client.UserInputService.InputBegan:Connect(function(current, pressed)
 					if not pressed then
 						if current.KeyCode.Name == Key then
-							pcall(callback)
+							pcall(callback, Key)
 						end
 					end
 				end)
