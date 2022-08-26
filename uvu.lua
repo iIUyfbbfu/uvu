@@ -969,7 +969,10 @@ Debug_ClientChannel:Button('Return to lobby', function()
 end)
 Debug_ClientChannel:Seperator()
 Debug_ClientChannel:Label('Join Friend...')
-Debug_ClientChannel:Button('Reload Online Friends', loadFriends)
+Debug_ClientChannel:Button('Reload Online Friends', function()
+    loadFriends()
+end)
+loadFriends()
 
 -- Debug 2
 Debug_Channel:Button('Re-Align Exploit Ui', function()
