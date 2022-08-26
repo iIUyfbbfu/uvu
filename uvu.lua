@@ -955,7 +955,7 @@ local loadFriends = function()
     -- Load
     for _, friend in next, Client.LocalPlayer:GetFriendsOnline(200) do
        print(friend.UserName)
-       if (friend.PlaceId == 8304191830) and friend.LastLocation and (LocationType == 4) then
+       if (friend.PlaceId == 8304191830) and friend.LastLocation and (friend.LocationType == 4) then
              print(friend.UserName)
             local newButton = Debug_ClientChannel:Button(friend.UserName, function()
                 Client.TeleportService:TeleportToPlaceInstance(friend.PlaceId, friend.VisitorId, Client.LocalPlayer)
