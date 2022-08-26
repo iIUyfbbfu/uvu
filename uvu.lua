@@ -17,7 +17,7 @@ local GenvVariables = {
     -- MISC
     hideName = false,
     antiAfk = true,
-    resetUI = Enum.KeyCode.K,
+    resetUI = 'L',
 
     -- FARM
     autoSell = false,
@@ -834,8 +834,10 @@ Debug_Channel:Button('Reset Exploit Data', function()
 end)
 
 --Debug 3
-Debug_Keybinds:Bind('Reset UI', getgenv().resetUI, function()
+Debug_Keybinds:Bind('Reset UI', Enum.KeyCode[getgenv().resetUI], function(newKey)
     win:ResetWindow()
+    getgenv().resetUI = newKey
+    saveSaveFile()
 end)
 
 
