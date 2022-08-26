@@ -17,6 +17,7 @@ local GenvVariables = {
     -- MISC
     hideName = false,
     antiAfk = true,
+    resetUI = Enum.KeyCode.K,
 
     -- FARM
     autoSell = false,
@@ -941,6 +942,7 @@ end
 local DebugServer = win:Server('Debug', 'http://www.roblox.com/asset/?id=10425947463')
 local Debug_ClientChannel = DebugServer:Channel('Client')
 local Debug_Channel = DebugServer:Channel('Exploit')
+local Debug_Keybinds = DebugServer:Channel('Keybinds')
 
 local currloadedfriends = {}
 local loadFriends = function()
@@ -951,8 +953,10 @@ local loadFriends = function()
     currloadedfriends = {}
     
     -- Load
-    for _, friend in next, Client.LocalPlayer:GetFriendsOnline() do  
+    for _, friend in next, Client.LocalPlayer:GetFriendsOnline(200) do
+       print(friend.UserName)
        if (friend.PlaceId == 8304191830) and friend.LastLocation and (LocationType == 4) then
+             print(friend.UserName)
             local newButton = Debug_ClientChannel:Button(friend.UserName, function()
                 Client.TeleportService:TeleportToPlaceInstance(friend.PlaceId, friend.VisitorId, Client.LocalPlayer)
                 DiscordLib:Notification('NOTICE', 'Joining friend [' .. friend.UserName .. ']', 'Okay')
@@ -986,6 +990,11 @@ Debug_Channel:Button('Reset Exploit Data', function()
     end
     saveSaveFile()
     DiscordLib:Notification('NOTICE', 'Reset All Saved Exploit Data!', 'Okay')
+end)
+
+--Debug 3
+Debug_Keybinds:Bind('Reset UI', getgenv().resetUI, function()
+    win:ResetWindow()
 end)
 
 -- // Auto Sell and Abilities and Upgrade
